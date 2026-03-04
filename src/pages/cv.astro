@@ -1,89 +1,34 @@
 ---
-import Layout from '@/layouts/Layout.astro'
-import { experiences, education, skills, publications } from '../data/cv'
-import CvTimeline from '@/components/ui/CvTimeline.astro'
+import Layout from "../layouts/Layout.astro";
 
-import type { Experience, Education, Publication } from '../types/cv'
-import List from '@/components/ui/List.astro'
-import PublicationsList from '@/components/ui/PublicationsList.astro'
-
-let orderedExperiences: Experience[] = []
-let orderedEducations: Education[] = []
-let orderedPublications: Publication[] = []
-
-const orderElement = <T extends { time: string }>(a: T, b: T) => {
-  const presentValues = ['present', 'now', 'current', 'today']
-  if (
-			presentValues.includes(
-				(a['time'] as string)?.split(' - ')[1]?.toLowerCase()
-			)
-		) {
-			// If the date is 'present', it should be the first element
-			return -1
-		}
-		const dateA = new Date((a['time'] as string)?.split(' - ')[1])
-		const dateB = new Date((b['time'] as string)?.split(' - ')[1])
-		return dateB.getTime() - dateA.getTime()
-}
-
-if (experiences.length > 0) {
-	orderedExperiences = experiences.sort((a, b) => {
-		return orderElement(a, b)
-	})
-}
-
-if (education.length > 0) {
-	orderedEducations = education.sort((a, b) => {
-		return orderElement(a, b)
-	})
-}
-
-if (publications.length > 0) {
-	orderedPublications = publications.sort((a, b) => {
-		return orderElement(a, b)
-	})
-}
+const pdfPath = `${import.meta.env.BASE_URL}cv/Raymundo_CV.pdf`;
 ---
 
-<Layout>
-	{
-		orderedEducations.length > 0 && (
-			<section class='mb-12'>
-				<h2 class='text-2xl font-bold mb-6 border-b pb-2'>
-					Education
-				</h2>
-				<CvTimeline elements={orderedEducations} colored={true} />
-			</section>
-		)
-	}
+<Layout title="CV | Raymundo">
+  <section class="space-y-4">
+    <h1 class="text-3xl font-black">CV</h1>
 
-	{
-		orderedExperiences.length > 0 && (
-			<section class='mb-12'>
-				<h2 class='text-2xl font-bold mb-6 border-b pb-2'>
-					Experiences
-				</h2>
-				<CvTimeline elements={orderedExperiences} colored={true} />
-			</section>
-		)
-	}
+    <div class="flex gap-3 flex-wrap">
+      <a class="btn btn-primary" href={pdfPath} target="_blank" rel="noopener">
+        Open in new tab (zoom)
+      </a>
 
-	{
-		orderedPublications.length > 0 && (
-			<section class='mb-12'>
-				<h2 class='text-2xl font-bold mb-6 border-b pb-2'>
-					Last publications
-				</h2>
-				<PublicationsList elements={orderedPublications}/>
-			</section>
-		)
-	}
+      <a class="btn btn-outline" href={pdfPath} download>
+        Download PDF
+      </a>
+    </div>
 
-	{
-		skills.length > 0 && (
-			<section class='mb-12'>
-				<List listTitle='Skills' listItems={skills}/>
-			</section>
-		)
-	}
+    <div class="w-full rounded-xl overflow-hidden border border-base-200">
+      <iframe
+        title="Raymundo CV"
+        src={`${pdfPath}#view=FitH`}
+        class="w-full"
+        style="height: 130vh;"
+      ></iframe>
+    </div>
+
+    <p class="text-sm opacity-70">
+      Tip: “Open in new tab” gives the best zoom/search experience.
+    </p>
+  </section>
 </Layout>

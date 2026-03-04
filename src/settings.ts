@@ -1,20 +1,20 @@
 export const profile = {
 	fullName: 'Raymundo',
-	title: '',
-	institute: '',
-	author_name: '', // Author name to be highlighted in the papers section
+	title: 'Robotics and Digital Systems Engineering',
+	institute: 'Tecnológico de Monterrey (ITESM)',
+	author_name: 'Roberto Raymundo Gomez Vargas', // Author name to be highlighted in the papers section
 	research_areas: [
-		// { title: 'Physics', description: 'Brief description of the research interest', field: 'physics' },
+		{ title: 'Physics', description: 'Brief description of the research interest', field: 'physics' },
 	],
 }
 
 // Set equal to an empty string to hide the icon that you don't want to display
 export const social = {
-	email: '',
-	linkedin: '',
-	x: 'https://www.x.com/',
+	email: 'robertogomez101010@gmail.com',
+	linkedin: 'https://www.linkedin.com/in/roberto-raymundo/',
+	github: 'https://github.com/raymundo140',
+	x: '',
 	bluesky: '',
-	github: '',
 	gitlab: '',
 	scholar: '',
 	inspire: '',

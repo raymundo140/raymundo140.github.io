@@ -24,7 +24,7 @@ export type Project = {
   
   export const projects: Project[] = [
 	{
-	  slug: 'autonomous-arm',
+	  slug: 'p1',
 	  title: 'Autonomous Robotic Arm',
 	  summary: '6-DOF robotic arm with computer vision for pick-and-place tasks using ROS2 and OpenCV.',
 	  tags: ['ROS2', 'OpenCV', 'Python', 'C++'],
@@ -33,7 +33,7 @@ export type Project = {
 	  description: 'Full description here — what the project does, your role, the results, what you learned.',
 	},
 	{
-	  slug: 'line-following-robot',
+	  slug: 'p2',
 	  title: 'Line Following Robot',
 	  summary: 'PID-controlled differential drive robot that follows a line at high speed with sensor fusion.',
 	  tags: ['PID', 'Arduino', 'C++', 'Sensor Fusion'],
@@ -42,7 +42,7 @@ export type Project = {
 	  description: 'Full description here.',
 	},
 	{
-	  slug: 'slam-mapping',
+	  slug: 'p3',
 	  title: 'SLAM Indoor Mapping',
 	  summary: 'Implemented GMapping SLAM on a TurtleBot3 to autonomously map unknown environments.',
 	  tags: ['ROS', 'SLAM', 'LiDAR', 'Python'],
@@ -51,7 +51,7 @@ export type Project = {
 	  description: 'Full description here.',
 	},
 	{
-	  slug: 'computer-vision-sorter',
+	  slug: 'p4',
 	  title: 'Vision-Based Object Sorter',
 	  summary: 'Real-time object classification and sorting pipeline using YOLOv8 and a conveyor system.',
 	  tags: ['YOLOv8', 'Python', 'OpenCV', 'Raspberry Pi'],
@@ -60,7 +60,7 @@ export type Project = {
 	  description: 'Full description here.',
 	},
 	{
-	  slug: 'drone-pid',
+	  slug: 'p5',
 	  title: 'Quadrotor Attitude Control',
 	  summary: 'Designed and tuned a cascaded PID controller for stable quadrotor hover and trajectory tracking.',
 	  tags: ['Control Systems', 'MATLAB', 'Simulink', 'Python'],

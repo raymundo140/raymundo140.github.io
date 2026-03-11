@@ -1,0 +1,58 @@
+---
+import Layout from '../layouts/Layout.astro'
+import { projects, template } from '@/settings'
+
+const base = template.base
+
+const projectList = projects.map(p => ({
+  slug: p.slug,
+  title: p.title,
+  image: p.image,
+  tags: p.tags,
+  summary: p.summary,
+  href: base + '/projects/' + p.slug,
+}))
+---
+
+<Layout>
+  <div class='max-w-5xl mx-auto py-12'>
+
+    <div class='mb-12 border-b pb-8'>
+      <h1 class='text-4xl font-bold mb-3'>Projects</h1>
+      <p class='text-base-content/70 text-lg'>
+        A collection of my robotics and engineering projects — from autonomous systems to
+        computer vision pipelines.
+      </p>
+    </div>
+
+    <div class='grid grid-cols-1 sm:grid-cols-2 gap-8'>
+      {projectList.map(p => (
+        <a href={p.href} class='card bg-base-100 border border-base-300 shadow-sm hover:shadow-md hover:border-primary transition-all duration-200 group cursor-pointer no-underline'>
+
+          <div class='relative h-52 overflow-hidden rounded-t-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center'>
+            <img
+              src={p.image}
+              alt={p.title}
+              class='absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300'
+              onerror="this.style.display='none'"
+            />
+            <span class='text-5xl opacity-20 select-none'>🤖</span>
+          </div>
+
+          <div class='card-body p-5 gap-3'>
+            <h2 class='card-title text-lg font-bold group-hover:text-primary transition-colors'>
+              {p.title}
+            </h2>
+            <p class='text-sm text-base-content/70 line-clamp-3'>{p.summary}</p>
+            <div class='flex flex-wrap gap-1 mt-1'>
+              {p.tags.map(tag => <span class='badge badge-outline badge-sm'>{tag}</span>)}
+            </div>
+            <div class='mt-2 text-sm font-semibold text-primary'>View project →</div>
+          </div>
+
+        </a>
+      ))}
+    </div>
+
+  </div>
+</Layout>

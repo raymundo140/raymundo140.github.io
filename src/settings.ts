@@ -8,6 +8,68 @@ export const profile = {
 	],
 }
 
+
+
+// Projects
+export type Project = {
+	slug: string;           // URL-safe id, used for <article id={slug}> and /projects#slug
+	title: string;
+	summary: string;        // 1-2 sentence teaser shown on home card
+	tags: string[];         // Tech/skills badges
+	image: string;          // Path relative to /public, e.g. '/images/projects/arm.jpg'
+	repoUrl?: string;       // Optional GitHub link
+	demoUrl?: string;       // Optional live demo link
+	description?: string;   // Longer markdown-style text for the full Projects page
+  };
+  
+  export const projects: Project[] = [
+	{
+	  slug: 'autonomous-arm',
+	  title: 'Autonomous Robotic Arm',
+	  summary: '6-DOF robotic arm with computer vision for pick-and-place tasks using ROS2 and OpenCV.',
+	  tags: ['ROS2', 'OpenCV', 'Python', 'C++'],
+	  image: '/images/projects/arm.jpg',
+	  repoUrl: 'https://github.com/raymundo140/autonomous-arm',
+	  description: 'Full description here — what the project does, your role, the results, what you learned.',
+	},
+	{
+	  slug: 'line-following-robot',
+	  title: 'Line Following Robot',
+	  summary: 'PID-controlled differential drive robot that follows a line at high speed with sensor fusion.',
+	  tags: ['PID', 'Arduino', 'C++', 'Sensor Fusion'],
+	  image: '/images/projects/line-follower.jpg',
+	  repoUrl: 'https://github.com/raymundo140/line-follower',
+	  description: 'Full description here.',
+	},
+	{
+	  slug: 'slam-mapping',
+	  title: 'SLAM Indoor Mapping',
+	  summary: 'Implemented GMapping SLAM on a TurtleBot3 to autonomously map unknown environments.',
+	  tags: ['ROS', 'SLAM', 'LiDAR', 'Python'],
+	  image: '/images/projects/slam.jpg',
+	  repoUrl: 'https://github.com/raymundo140/slam-mapping',
+	  description: 'Full description here.',
+	},
+	{
+	  slug: 'computer-vision-sorter',
+	  title: 'Vision-Based Object Sorter',
+	  summary: 'Real-time object classification and sorting pipeline using YOLOv8 and a conveyor system.',
+	  tags: ['YOLOv8', 'Python', 'OpenCV', 'Raspberry Pi'],
+	  image: '/images/projects/sorter.jpg',
+	  repoUrl: 'https://github.com/raymundo140/vision-sorter',
+	  description: 'Full description here.',
+	},
+	{
+	  slug: 'drone-pid',
+	  title: 'Quadrotor Attitude Control',
+	  summary: 'Designed and tuned a cascaded PID controller for stable quadrotor hover and trajectory tracking.',
+	  tags: ['Control Systems', 'MATLAB', 'Simulink', 'Python'],
+	  image: '/images/projects/drone.jpg',
+	  repoUrl: 'https://github.com/raymundo140/drone-pid',
+	  description: 'Full description here.',
+	},
+  ];
+
 // Set equal to an empty string to hide the icon that you don't want to display
 export const social = {
 	email: 'robertogomez101010@gmail.com',
@@ -34,7 +96,7 @@ export const template = {
 }
 
 export const seo = {
-	default_title: 'Astro Academia',
-	default_description: 'Astro Academia is a template for academic websites.',
+	default_title: 'Raymundo Portfolio',
+	default_description: 'Raymundo Robotics Engineering Portfolio',
 	default_image: '/images/astro-academia.png',
 }

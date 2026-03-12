@@ -70,6 +70,90 @@ export type Project = {
 	},
   ];
 
+
+  //Work Experience
+  export type WorkExperience = {
+	slug: string;
+	company: string;
+	title: string;
+	location: string;
+	dateRange: string;
+	bullets: string[];
+	tags: string[];
+	logo: string;
+	companyUrl?: string;
+  };
+  
+  export const experiences: WorkExperience[] = [
+	{
+	  slug: 'w1',
+	  company: 'AIST – National Institute of Advanced Industrial Science and Technology',
+	  title: 'Robotics Research Intern',
+	  location: 'Tsukuba, Japan',
+	  dateRange: 'Mar 2026 – Sep 2026',
+	  bullets: [
+		'Developed autonomous navigation for a mobile robot integrating LiDAR SLAM for robust operation in complex environments.',
+		'Implemented end-to-end robotic-arm integration on a mobile manipulator with closed-loop control for safe autonomous and teleoperated operation.',
+	  ],
+	  tags: ['ROS2', 'SLAM', 'LiDAR', 'Python', 'Mobile Robots'],
+	  logo: '/images/experience/w1.png',
+	  companyUrl: 'https://www.aist.go.jp/index_en.html',
+	},
+	{
+	  slug: 'w2',
+	  company: 'Smart Factory MTY',
+	  title: 'Robotics Engineer Intern',
+	  location: 'Monterrey, Mexico',
+	  dateRange: 'Feb 2024 – Jun 2024',
+	  bullets: [
+		'Assembled, diagnosed, and repaired industrial robots (UR3/UR5, xArm, Baxter, ABB YuMi), reducing downtime by 20%.',
+		'Engineered a high-precision end-effector mounted on an industrial robot, increasing throughput by 30%.',
+	  ],
+	  tags: ['Industrial Robots', 'SolidWorks', '3D Printing', 'Electrical/Mechanical'],
+	  logo: '/images/experience/w2.png',
+	},
+	{
+	  slug: 'w3',
+	  company: 'Tecnológico de Monterrey (ITESM)',
+	  title: 'Systems & Data Automation Engineer',
+	  location: 'Monterrey, Mexico',
+	  dateRange: 'Feb 2023 – Mar 2026',
+	  bullets: [
+		'Managed multi-campus compliance data operations overseeing $5.3M in projects and contracts.',
+		'Automated systems reducing manual work for 100+ employees and improving processing time by 21%.',
+	  ],
+	  tags: ['Automation', 'Data', 'Python', 'Process Improvement'],
+	  logo: '/images/experience/w3.png',
+	  companyUrl: 'https://tec.mx',
+	},
+	{
+	  slug: 'w4',
+	  company: 'Self-Employed',
+	  title: 'Freelance Technology Specialist',
+	  location: 'Monterrey, Mexico & USA',
+	  dateRange: '2022 – Present',
+	  bullets: [
+		'Partnered with SMEs in Mexico and the USA to integrate technology and automate operational workflows.',
+		'Delivered custom automation solutions improving commercial results and reducing manual overhead for clients.',
+	  ],
+	  tags: ['Automation', 'Business Integration', 'Consulting'],
+	  logo: '/images/experience/w4.png',
+	},
+	{
+	  slug: 'w5',
+	  company: 'CIBRUC',
+	  title: 'Computer Programmer (Part-time)',
+	  location: 'Monterrey, Mexico',
+	  dateRange: 'Feb 2023 – Jul 2023',
+	  bullets: [
+		'Designed and programmed an interactive simulation and video game for online hosting and licensing using Godot.',
+		'Led UI/UX design and production optimization, achieving a coherent and intuitive user experience.',
+	  ],
+	  tags: ['Godot', 'Game Dev', 'UI Design', 'Simulation'],
+	  logo: '/images/experience/w5.png',
+	},
+  ]
+
 // Set equal to an empty string to hide the icon that you don't want to display
 export const social = {
 	email: 'robertogomez101010@gmail.com',

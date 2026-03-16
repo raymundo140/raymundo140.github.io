@@ -182,6 +182,71 @@ export type Project = {
 	},
   ]
 
+  // Education
+  export type Education = {
+	slug: string;
+	institution: string;
+	program: string;
+	field: string;
+	location: string;
+	dateRange: string;
+	grade: string;
+	tags: string[];
+	logo: string;
+	institutionUrl?: string;
+  };
+  
+  export const education: Education[] = [
+	{
+	  slug: 'e1',
+	  institution: 'Tecnológico de Monterrey (ITESM)',
+	  program: 'B.S. in Robotics and Digital Systems Engineering',
+	  field: 'Robotics & Digital Systems Engineering',
+	  location: 'Monterrey, Mexico',
+	  dateRange: 'Aug 2021 – Dec 2026',
+	  grade: 'GPA: 4.0/4.0 · Average: 98/100 (Top 1%)',
+	  tags: ['Intelligent Robotics', 'Computer Vision', 'Control Systems', 'Kinematics & Dynamics'],
+	  logo: '/images/education/e1.png',
+	  institutionUrl: 'https://tec.mx',
+	},
+	{
+	  slug: 'e2',
+	  institution: 'University of Seoul (UOS)',
+	  program: 'Exchange Program',
+	  field: 'AI, Embedded Systems & Solid-State Electronics',
+	  location: 'Seoul, South Korea',
+	  dateRange: 'Aug 2025 – Dec 2025',
+	  grade: 'Grade: A+',
+	  tags: ['Artificial Intelligence', 'Advanced Embedded Systems', 'Solid-State Electronics'],
+	  logo: '/images/education/e2.png',
+	  institutionUrl: 'https://www.uos.ac.kr/en',
+	},
+	{
+	  slug: 'e3',
+	  institution: 'Beijing Institute of Technology (BIT)',
+	  program: 'Summer Program',
+	  field: 'Advanced Electronics & Computer Science',
+	  location: 'Beijing, China',
+	  dateRange: 'Jul 2025 – Aug 2025',
+	  grade: 'Grade: A+',
+	  tags: ['Advanced Electronics', 'Embedded Systems', 'Computer Science'],
+	  logo: '/images/education/e3.png',
+	  institutionUrl: 'https://english.bit.edu.cn',
+	},
+	{
+	  slug: 'e4',
+	  institution: 'University of Waterloo',
+	  program: 'Summer Program',
+	  field: 'Advanced Academic Communication & Cross-Cultural Studies',
+	  location: 'Waterloo, Canada',
+	  dateRange: 'Jul 2024 – Aug 2024',
+	  grade: 'Grade: A+',
+	  tags: ['Academic Communication', 'Public Speaking', 'Leadership', 'Global Collaboration'],
+	  logo: '/images/education/e4.png',
+	  institutionUrl: 'https://uwaterloo.ca',
+	},
+  ]
+
 // Set equal to an empty string to hide the icon that you don't want to display
 export const social = {
 	email: 'robertogomez101010@gmail.com',

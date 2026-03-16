@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro'
-import { profile, projects, experiences, research, template } from '@/settings'
+import { profile, projects, experiences, research, education, template } from '@/settings'
 import { publications } from '@/data/cv'
 import ProfilePictures from '@/assets/profile_pictures.jpg'
 import Hero from '@/components/ui/Hero.astro'
@@ -9,6 +9,7 @@ import ProjectCard from '@/components/ui/ProjectCard.astro'
 import AllProjectsCard from '@/components/ui/AllProjectsCard.astro'
 import ExperienceCard from '@/components/ui/ExperienceCard.astro'
 import ResearchCard from '@/components/ui/ResearchCard.astro'
+import EducationCard from '@/components/ui/EducationCard.astro'
 
 const { fullName, title, institute } = profile
 const base = template.base
@@ -48,7 +49,12 @@ const previewProjects = projects.slice(0, 5)
     </div>
   </section>
 
-  <section class='py-12 border-t'>
-    <ArticleList listTitle='Education' listItems={publications} />
+  <section class='py-12 border-b'>
+    <h2 class='text-2xl font-bold mb-8'>Education</h2>
+    <div class='flex flex-col gap-4'>
+      {education.map(item => (
+        <EducationCard item={item} base={base} />
+      ))}
+    </div>
   </section>
 </Layout>

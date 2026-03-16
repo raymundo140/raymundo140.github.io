@@ -60,7 +60,26 @@ const experience = defineCollection({
       logo: z.string(),
     }),
   })
+
+  const education = defineCollection({
+    loader: glob({
+      pattern: "**/*.mdx",
+      base: "./src/content/education",
+    }),
+    schema: z.object({
+      institution: z.string(),
+      program: z.string(),
+      field: z.string(),
+      location: z.string(),
+      dateRange: z.string(),
+      grade: z.string(),
+      tags: z.array(z.string()),
+      logo: z.string(),
+      institutionUrl: z.string().optional(),
+    }),
+  })
   
-export const collections = { blog, projects, experience, research }
+export const collections = { blog, projects, experience, research, education }
+  
   
 

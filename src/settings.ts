@@ -203,7 +203,7 @@ export type Project = {
 	  program: 'B.S. in Robotics and Digital Systems Engineering',
 	  field: 'Robotics & Digital Systems Engineering',
 	  location: 'Monterrey, Mexico',
-	  dateRange: 'Aug 2021 – Dec 2026',
+	  dateRange: 'Aug 2022 – Dec 2026',
 	  grade: 'GPA: 4.0/4.0 · Average: 98/100 (Top 1%)',
 	  tags: ['Intelligent Robotics', 'Computer Vision', 'Control Systems', 'Kinematics & Dynamics'],
 	  logo: '/images/education/e1.png',
@@ -244,6 +244,62 @@ export type Project = {
 	  tags: ['Academic Communication', 'Public Speaking', 'Leadership', 'Global Collaboration'],
 	  logo: '/images/education/e4.png',
 	  institutionUrl: 'https://uwaterloo.ca',
+	},
+  ]
+
+  // Awards
+  export type Award = {
+	title: string;
+	issuer: string;
+	location: string;
+	date: string;
+	description: string;
+	bullets?: string[];
+	link: string;
+	logo: string;
+  };
+  
+  export const awards: Award[] = [
+	{
+	  title: 'Student Representative & Honored Graduate — Closing Ceremony Speaker',
+	  issuer: 'Beijing Institute of Technology (BIT)',
+	  location: 'Beijing, China',
+	  date: 'Aug 2025',
+	  description: 'Recognized as the honored student of the Electronics Engineering program and selected to deliver the closing ceremony speech representing the entire international cohort.',
+	  bullets: [
+		'Awarded diploma for outstanding performance in the BIT International Summer Program.',
+		'Selected among all international students to deliver the closing ceremony speech as class representative.',
+		'Received a full scholarship from Tecnológico de Monterrey to attend the program.',
+	  ],
+	  link: 'https://www.linkedin.com/feed/update/urn:li:activity:7360058580319850496/',
+	  logo: '/images/education/e3.png',
+	},
+	{
+	  title: 'Top 1% GPA — School of Engineering & Sciences',
+	  issuer: 'Tecnológico de Monterrey (ITESM)',
+	  location: 'Monterrey, Mexico',
+	  date: 'Oct 2025',
+	  description: 'Recognized by the School of Engineering and Sciences at Tecnológico de Monterrey for being among the top 1% GPA students nationwide during the 2024–2025 academic year.',
+	  bullets: [
+		'Ranked among the top 1% of GPA students across the entire engineering program at ITESM.',
+		'Honored at the Mejores Promedios ceremony, attended remotely while studying abroad at the University of Seoul.',
+	  ],
+	  link: 'https://www.linkedin.com/feed/update/urn:li:activity:7385899900934373376/',
+	  logo: '/images/education/e1.png',
+	},
+	{
+	  title: '3rd Place — Expo Ingenierías 2023',
+	  issuer: 'Tecnológico de Monterrey (ITESM)',
+	  location: 'Monterrey, Mexico',
+	  date: 'Dec 2023',
+	  description: 'Awarded 3rd place at Expo Ingenierías 2023 for "SafeSpace" — an AI-enabled senior home safety system, competing among over 100 participants.',
+	  bullets: [
+		'Built an integrated in-house safety system for seniors with AI facial recognition using Python.',
+		'Implemented multi-sensor automation and remote web monitoring via NodeMCU ESP32, Arduino, SolidWorks, and Docker.',
+		'Awarded for outstanding technology entrepreneurship product among 100+ competing teams.',
+	  ],
+	  link: 'https://www.linkedin.com/feed/update/urn:li:activity:7139060487178092544/',
+	  logo: '/images/awards/expo.png',
 	},
   ]
 

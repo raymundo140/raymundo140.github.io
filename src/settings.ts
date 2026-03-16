@@ -154,6 +154,34 @@ export type Project = {
 	},
   ]
 
+// Research
+  export type Research = {
+	slug: string;
+	title: string;
+	institution: string;
+	location: string;
+	date: string;
+	bullets: string[];
+	tags: string[];
+	logo: string;
+  };
+  
+  export const research: Research[] = [
+	{
+	  slug: 'research_paper',
+	  title: 'Neuromorphic Computing and Memristor-Based Devices in Intelligent Robotics',
+	  institution: 'University of Seoul',
+	  location: 'Seoul, South Korea',
+	  date: 'Dec 2025',
+	  bullets: [
+		'Authored a faculty-reviewed research paper analyzing solid-state device physics and linking neuromorphic/memristor capabilities to energy-efficient intelligent robotics.',
+		'Invited by the engineering faculty to deliver a lecture to an international cohort on neuromorphic architectures and hardware-accelerated AI systems.',
+	  ],
+	  tags: ['Neuromorphic Computing', 'Memristors', 'Robotics', 'AI Hardware', 'Research'],
+	  logo: '/images/research/r1.png',
+	},
+  ]
+
 // Set equal to an empty string to hide the icon that you don't want to display
 export const social = {
 	email: 'robertogomez101010@gmail.com',

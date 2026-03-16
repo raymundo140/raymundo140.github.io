@@ -45,6 +45,22 @@ const experience = defineCollection({
       companyUrl: z.string().optional(),
     }),
   })
+
+  const research = defineCollection({
+    loader: glob({
+      pattern: "**/*.mdx",
+      base: "./src/content/research",
+    }),
+    schema: z.object({
+      title: z.string(),
+      institution: z.string(),
+      location: z.string(),
+      date: z.string(),
+      tags: z.array(z.string()),
+      logo: z.string(),
+    }),
+  })
   
-export const collections = { blog, projects, experience }
+export const collections = { blog, projects, experience, research }
+  
 

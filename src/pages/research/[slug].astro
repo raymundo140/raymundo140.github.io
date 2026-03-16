@@ -1,0 +1,66 @@
+---
+import { getCollection, render } from 'astro:content'
+import Layout from '../../layouts/Layout.astro'
+import { template, research } from '@/settings'
+
+export async function getStaticPaths() {
+  const entries = await getCollection('research')
+  return entries.map(entry => ({ params: { slug: entry.id } }))
+}
+
+const { slug } = Astro.params
+const base = template.base
+
+const entries = await getCollection('research')
+const entry = entries.find(e => e.id === slug)
+
+if (!entry) {
+  return Astro.redirect(base + '/research')
+}
+
+const { Content } = await render(entry)
+const item = research.find(r => r.slug === slug)
+const { title, institution, location, date, tags, logo } = entry.data
+---
+
+<Layout>
+  <div class='max-w-4xl mx-auto py-12'>
+
+    <a href={base + '/research'} class='btn btn-ghost btn-sm mb-8 -ml-2'>
+      ← Back to Research
+    </a>
+
+    <div class='flex items-start gap-6 mb-10'>
+      <div class='shrink-0 w-20 h-20 rounded-2xl border border-base-300 bg-base-100 overflow-hidden flex items-center justify-center'>
+        <img src={logo} alt={institution} class='w-full h-full object-contain p-2' onerror="this.style.display='none'" />
+      </div>
+      <div class='flex flex-col gap-1'>
+        <h1 class='text-3xl font-bold'>{title}</h1>
+        <p class='text-lg text-base-content/70'>Guest Lecturer & Researcher · {institution}</p>
+        <p class='text-sm text-base-content/50'>{location} · {date}</p>
+        <div class='flex flex-wrap gap-1 mt-2'>
+          {tags.map(tag => <span class='badge badge-outline badge-sm'>{tag}</span>)}
+        </div>
+      </div>
+    </div>
+
+    {/* MDX content (abstract, notes, etc.) */}
+    <div class='prose prose-lg max-w-none mb-10'>
+      <Content />
+    </div>
+
+    {/* Embedded PDF */}
+    <div class='border border-base-300 rounded-2xl overflow-hidden'>
+      <div class='bg-base-200 px-4 py-3 border-b border-base-300'>
+        <p class='text-sm font-semibold'>📄 Full Paper</p>
+      </div>
+      <iframe
+        src='/papers/research_paper.pdf'
+        class='w-full'
+        style='height: 80vh;'
+        title={title}
+      />
+    </div>
+
+  </div>
+</Layout>

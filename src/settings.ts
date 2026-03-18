@@ -303,6 +303,59 @@ export type Project = {
 	},
   ]
 
+// skills 
+  export type SkillCategory = {
+	category: string;
+	icon: string;
+	skills: string[];
+  };
+  
+  export type Language = {
+	name: string;
+	level: string;
+	note: string;
+  };
+  
+  export const skillCategories: SkillCategory[] = [
+	{
+	  category: 'Programming',
+	  icon: '💻',
+	  skills: ['Python', 'C/C++', 'C#', 'MATLAB', 'Bash', 'VHDL', 'Assembly', 'HTML', 'SQL', 'R', 'OpenMP', 'Parallel Programming', 'CMake', 'LaTeX'],
+	},
+	{
+	  category: 'Tools & Frameworks',
+	  icon: '🛠️',
+	  skills: ['ROS 2', 'micro-ROS', 'OpenCV', 'YOLOv8', 'PyTorch', 'TensorFlow', 'Gazebo', 'RViz', 'CoppeliaSim', 'MoveIt', 'Nav2', 'Docker', 'Git/GitHub', 'Linux', 'FreeRTOS', 'Simulink', 'SolidWorks', 'Fusion 360', 'Unity', 'Nginx', 'MQTT', 'NumPy', 'Pandas', 'Matplotlib', 'PlotJuggler'],
+	},
+	{
+	  category: 'Hardware',
+	  icon: '🔧',
+	  skills: ['STM32', 'ESP32', 'NVIDIA Jetson Nano', 'Raspberry Pi', 'Arduino', 'PLCs', 'FPGAs', 'LiDAR', 'SLAM', 'RGB-D Cameras', 'IMU', 'Encoders', 'Soldering', 'Oscilloscope', '3D Printing', 'Laser Cutting', 'CAN/UART/SPI/I2C', 'Wi-Fi/BLE/LoRa/RFID', 'Many other sensors & actuators'],
+	},
+	{
+	  category: 'Robotics & Control',
+	  icon: '🤖',
+	  skills: ['Control Systems Design & Implementation', 'PID / Lead / Lag / Lead-Lag Controllers', 'Cascaded PID', 'Closed-Loop Control', 'State Machines', 'SLAM', 'Motion Planning', 'Path Planning', 'Localization', 'Sensor Fusion', 'Autonomous Navigation', 'Teleoperation', 'Kinematics & Dynamics', 'End-Effector Design', 'Embedded Systems Design', 'Real-Time Systems', 'Many more'],
+	},
+	{
+	  category: 'AI & Machine Learning',
+	  icon: '🧠',
+	  skills: ['Machine Learning', 'Linear & Logistic Regression', 'Gradient Descent', 'Decision Trees & Random Forests', 'SVMs', 'K-Means & Clustering', 'Dimensionality Reduction (PCA)', 'Cross-Validation & Regularization', 'Deep Learning', 'CNNs', 'RNNs & LSTMs', 'Transformers', 'Transfer Learning', 'Object Detection', 'Pose Detection', 'Semantic Segmentation', 'Shallow & Deep Neural Networks', 'Artificial Intelligence', 'Computer Vision'],
+	},
+	{
+	  category: 'Software & Systems',
+	  icon: '⚙️',
+	  skills: ['Containerization (Docker)', 'Real-Time Systems', 'Embedded Systems Design', 'Git Workflow', 'Agile / Scrum', 'Many more'],
+	},
+  ]	
+  
+  export const languages: Language[] = [
+	{ name: 'Spanish', level: 'Native', note: 'Native' },
+	{ name: 'English', level: 'C2', note: 'Near-Native' },
+	{ name: 'German', level: 'B1', note: 'Intermediate' },
+	{ name: 'Japanese', level: 'Beginner', note: 'Beginner' },
+  ]
+
 // Set equal to an empty string to hide the icon that you don't want to display
 export const social = {
 	email: 'robertogomez101010@gmail.com',

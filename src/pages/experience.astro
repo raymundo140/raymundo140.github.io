@@ -1,9 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import { experiences, template } from '@/settings'
-
 const base = template.base
-
 const expList = experiences.map(e => ({
   slug: e.slug,
   company: e.company,
@@ -19,19 +17,16 @@ const expList = experiences.map(e => ({
 
 <Layout>
   <div class='max-w-4xl mx-auto py-12'>
-
     <div class='mb-12 border-b pb-8'>
       <h1 class='text-4xl font-bold mb-3'>Work Experience</h1>
       <p class='text-base-content/70 text-lg'>
         My professional journey across robotics research, engineering, and technology consulting.
       </p>
     </div>
-
     <div class='flex flex-col gap-4'>
       {expList.map(e => (
-        <a href={e.href} class='block bg-base-200 border border-base-300 rounded-2xl p-6 hover:shadow-md hover:border-primary transition-all duration-200 group cursor-pointer no-underline'>
+        <a href={e.href} class='block bg-base-200 border border-base-300 rounded-2xl p-6 hover:shadow-md hover:border-base-content/80 transition-all duration-200 group cursor-pointer no-underline'>
           <div class='flex items-start gap-5'>
-
             <div class='shrink-0 w-14 h-14 rounded-xl border border-base-300 bg-base-100 overflow-hidden flex items-center justify-center'>
               <img
                 src={e.logo}
@@ -40,11 +35,10 @@ const expList = experiences.map(e => ({
                 onerror="this.style.display='none'"
               />
             </div>
-
             <div class='flex flex-col gap-2 flex-1 min-w-0'>
               <div class='flex items-start justify-between gap-4 flex-wrap'>
                 <div>
-                  <h3 class='font-bold text-base group-hover:text-primary transition-colors leading-snug'>
+                  <h3 class='font-bold text-base group-hover:font-extrabold transition-all leading-snug'>
                     {e.title}
                   </h3>
                   <p class='text-sm text-base-content/60'>{e.company}</p>
@@ -54,29 +48,24 @@ const expList = experiences.map(e => ({
                   <p class='text-xs text-base-content/50'>{e.location}</p>
                 </div>
               </div>
-
               <ul class='mt-1 space-y-1'>
                 {e.bullets.map(b => (
-                  <li class='text-sm text-base-content/75 flex gap-2'>
-                    <span class='text-primary mt-0.5 shrink-0'>▸</span>
+                  <li class='text-sm text-base-content/75 flex gap-2 items-baseline'>
+                    <span class='text-base-content/60 shrink-0'>▸</span>
                     <span>{b}</span>
                   </li>
                 ))}
               </ul>
-
               <div class='flex flex-wrap gap-1 mt-2'>
                 {e.tags.map(tag => (
                   <span class='badge badge-outline badge-sm'>{tag}</span>
                 ))}
               </div>
-
-              <div class='mt-2 text-sm font-semibold text-primary'>View full experience →</div>
+              <div class='mt-2 text-sm font-semibold text-base-content/60'>View full experience →</div>
             </div>
-
           </div>
         </a>
       ))}
     </div>
-
   </div>
 </Layout>

@@ -1,20 +1,17 @@
 ---
 import type { WorkExperience } from '@/settings'
-
 interface Props {
   experience: WorkExperience
   base?: string
 }
-
 const { experience, base = '' } = Astro.props
 const { slug, company, title, location, dateRange, bullets, tags, logo } = experience
 const href = base + '/experience/' + slug
 ---
 
-<a href={href} class="block bg-base-200 border border-base-300 rounded-2xl p-6 hover:shadow-md hover:border-primary transition-all duration-200 group cursor-pointer no-underline">
+<a href={href} class="block bg-base-200 border border-base-300 rounded-2xl p-6 hover:shadow-md hover:border-base-content/80 transition-all duration-200 group cursor-pointer no-underline">
   <div class="flex items-start gap-5">
 
-    <!-- Logo -->
     <div class="shrink-0 w-14 h-14 rounded-xl border border-base-300 bg-base-100 overflow-hidden flex items-center justify-center">
       <img
         src={logo}
@@ -24,13 +21,10 @@ const href = base + '/experience/' + slug
       />
     </div>
 
-    <!-- Main content -->
     <div class="flex flex-col gap-2 flex-1 min-w-0">
-
-      <!-- Top row: title + date -->
       <div class="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h3 class="font-bold text-base group-hover:text-primary transition-colors leading-snug">
+          <h3 class="font-bold text-base group-hover:font-extrabold transition-all leading-snug">
             {title}
           </h3>
           <p class="text-sm text-base-content/60">{company}</p>
@@ -41,23 +35,21 @@ const href = base + '/experience/' + slug
         </div>
       </div>
 
-      <!-- Bullets -->
       <ul class="mt-1 space-y-1">
         {bullets.map(b => (
-          <li class="text-sm text-base-content/75 flex gap-2">
-            <span class="text-primary mt-0.5 shrink-0">▸</span>
+          <li class="text-sm text-base-content/75 flex gap-2 items-baseline">
+            <span class="text-base-content/60 shrink-0">▸</span>
             <span>{b}</span>
           </li>
         ))}
       </ul>
 
-      <!-- Tags -->
       <div class="flex flex-wrap gap-1 mt-2">
         {tags.map(tag => (
           <span class="badge badge-outline badge-sm">{tag}</span>
         ))}
       </div>
-
     </div>
+
   </div>
 </a>

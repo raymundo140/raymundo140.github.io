@@ -3,9 +3,7 @@ export const profile = {
 	title: 'Robotics and Digital Systems Engineering',
 	institute: 'Tecnológico de Monterrey (ITESM)',
 	author_name: 'Roberto Raymundo Gomez Vargas', // Author name to be highlighted in the papers section
-	research_areas: [
-		{ title: 'Physics', description: 'Brief description of the research interest', field: 'physics' },
-	],
+	
 }
 
 
@@ -194,6 +192,7 @@ export type Project = {
 	tags: string[];
 	logo: string;
 	institutionUrl?: string;
+	highlight?: string;  
   };
   
   export const education: Education[] = [
@@ -208,7 +207,7 @@ export type Project = {
 	  tags: ['Intelligent Robotics', 'Computer Vision', 'Control Systems', 'Kinematics & Dynamics'],
 	  logo: '/images/education/e1.png',
 	  institutionUrl: 'https://tec.mx',
-	},
+	  highlight: 'Awarded Top 1% GPA recognition by the School of Engineering & Sciences · Full scholarship recipient',	},
 	{
 	  slug: 'e2',
 	  institution: 'University of Seoul (UOS)',
@@ -220,7 +219,7 @@ export type Project = {
 	  tags: ['Artificial Intelligence', 'Advanced Embedded Systems', 'Solid-State Electronics'],
 	  logo: '/images/education/e2.png',
 	  institutionUrl: 'https://www.uos.ac.kr/en',
-	},
+	  highlight: 'Authored and presented faculty-reviewed research paper on Neuromorphic Computing at the university',	},
 	{
 	  slug: 'e3',
 	  institution: 'Beijing Institute of Technology (BIT)',
@@ -232,7 +231,7 @@ export type Project = {
 	  tags: ['Advanced Electronics', 'Embedded Systems', 'Computer Science'],
 	  logo: '/images/education/e3.png',
 	  institutionUrl: 'https://english.bit.edu.cn',
-	},
+	  highlight: 'Selected as class representative to deliver closing ceremony speech · Received full scholarship from ITESM',	},
 	{
 	  slug: 'e4',
 	  institution: 'University of Waterloo',
@@ -242,9 +241,9 @@ export type Project = {
 	  dateRange: 'Jul 2024 – Aug 2024',
 	  grade: 'Grade: A+',
 	  tags: ['Academic Communication', 'Public Speaking', 'Leadership', 'Global Collaboration'],
-	  logo: '/images/education/e4.png',
+	  logo: '/images/education/e4.svg',
 	  institutionUrl: 'https://uwaterloo.ca',
-	},
+	  highlight: 'Engaged in international team leadership, cross-cultural communication, and academic presentations',	},
   ]
 
   // Awards
@@ -374,8 +373,8 @@ export const template = {
 	website_url: 'https://localhost:4321', // Astro needs to know your site’s deployed URL to generate a sitemap. It must start with http:// or https://
 	menu_left: false,
 	transitions: true,
-	lightTheme: 'light', // Select one of the Daisy UI Themes or create your own
-	darkTheme: 'dark', // Select one of the Daisy UI Themes or create your own
+	lightTheme: 'lofi', // Select one of the Daisy UI Themes or create your own
+	darkTheme: 'lofi', // Select one of the Daisy UI Themes or create your own
 	excerptLength: 200,
 	postPerPage: 5,
     base: '' // Repository name starting with /

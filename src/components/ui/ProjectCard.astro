@@ -11,9 +11,7 @@ const { slug, title, summary, tags, image } = project
 const href = `${base}/projects/${slug}`
 ---
 
-<a href={href} class="card bg-base-100 border border-base-300 shadow-sm hover:shadow-md hover:border-primary transition-all duration-200 group cursor-pointer no-underline">
-
-  <div class="relative h-40 overflow-hidden rounded-t-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+<a href={href} class="card bg-base-100 border border-base-300 shadow-sm hover:shadow-md hover:border-base-content/80 transition-all duration-200 group cursor-pointer no-underline">  <div class="relative h-40 overflow-hidden rounded-t-2xl bg-base-300 flex items-center justify-center">
     <img
       src={image}
       alt=""
@@ -24,7 +22,7 @@ const href = `${base}/projects/${slug}`
   </div>
 
   <div class="card-body p-4 gap-2">
-    <h3 class="card-title text-base font-semibold leading-snug group-hover:text-primary transition-colors">
+    <h3 class="card-title text-base font-semibold leading-snug group-hover:font-bold transition-all">
       {title}
     </h3>
     <p class="text-sm text-base-content/70 line-clamp-3">{summary}</p>
@@ -35,4 +33,4 @@ const href = `${base}/projects/${slug}`
     </div>
   </div>
 
-</a>    
+</a>  

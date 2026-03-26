@@ -1,27 +1,31 @@
 ---
 import { Image } from 'astro:assets'
-
 import SocialIcons from './SocialIcons.astro'
-
-
 const {fullName, title, institute, profilePicture} = Astro.props
 ---
+
 <div class='flex-1'>
   <h1 class='text-4xl font-bold mb-4'>
     Welcome! I'm <span class='text-gray-500'>{fullName}</span>
   </h1>
-  <p class='text-xl text-gray-600 mb-4'>{title}{institute ? ` at ${institute}` : ''}</p>
   <p class='text-lg mb-6'>
-    Robotics and Digital Systems Engineering student at Tecnológico de Monterrey, 
-    with hands-on experience in autonomous systems, computer vision, and industrial robotics 
-    across research institutions in Japan, South Korea, and China.
+    Robotics and Digital Systems Engineer from Tecnológico de Monterrey (Top 1% GPA),
+    with hands-on research and engineering experience across Japan, South Korea, China,
+    Canada, and Mexico. I design and build autonomous systems, robots, embedded systems,
+    intelligent control systems, and AI-powered solutions.
   </p>
-  <div class='flex gap-4'>
-    <SocialIcons />
+  <div class='flex flex-col gap-2'>
+    <p class='text-sm text-base-content/60'>
+      Currently interning at AIST Japan — open to full-time robotics and AI roles starting 2027.
+    </p>
+    <p class='text-sm font-semibold'>Contact me:</p>
+    <div class='flex gap-4'>
+      <SocialIcons />
+    </div>
   </div>
 </div>
+
 <div class='size-72 lg:block hidden'>
-  <!-- Add your profile image -->
   <Image
     src={profilePicture}
     alt={fullName}

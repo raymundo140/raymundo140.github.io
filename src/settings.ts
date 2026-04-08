@@ -381,7 +381,7 @@ export const template = {
 }
 
 export const seo = {
-	default_title: 'Raymundo Portfolio',
-	default_description: 'Raymundo Robotics Engineering Portfolio',
-	default_image: '/images/astro-academia.png',
-}
+	default_title: 'Raymundo | Robotics Engineer',
+	default_description: 'Robotics and Digital Systems Engineer from Tecnológico de Monterrey (Top 1% GPA), with hands-on experience across Japan, South Korea, China, Canada, and Mexico.',
+	default_image: '/images/pfp.jpg',
+  }

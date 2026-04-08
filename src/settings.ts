@@ -8,66 +8,99 @@ export const profile = {
 
 
 
-// Projects
 export type Project = {
-	slug: string;           // URL-safe id, used for <article id={slug}> and /projects#slug
+	slug: string;
 	title: string;
-	summary: string;        // 1-2 sentence teaser shown on home card
-	tags: string[];         // Tech/skills badges
-	image: string;          // Path relative to /public, e.g. '/images/projects/arm.jpg'
-	repoUrl?: string;       // Optional GitHub link
-	demoUrl?: string;       // Optional live demo link
-	description?: string;   // Longer markdown-style text for the full Projects page
+	summary: string;
+	tags: string[];
+	image: string;
+	repoUrl?: string;
+	demoUrl?: string;
+	description?: string;
+	institution?: string;
+	location?: string;
+	company?: string;
+	logo?: string;
   };
   
   export const projects: Project[] = [
 	{
 	  slug: 'p1',
-	  title: 'Autonomous Robotic Arm',
-	  summary: '6-DOF robotic arm with computer vision for pick-and-place tasks using ROS2 and OpenCV.',
-	  tags: ['ROS2', 'OpenCV', 'Python', 'C++'],
-	  image: '/images/projects/arm.jpg',
-	  repoUrl: 'https://github.com/raymundo140/autonomous-arm',
-	  description: 'Full description here — what the project does, your role, the results, what you learned.',
+	  title: 'AI Autonomous Mobile Robot — Manchester Robotics',
+	  summary: 'Autonomous car using computer vision and AI on NVIDIA Jetson Nano with ROS2 for real-time navigation and traffic sign recognition.',
+	  tags: ['ROS2', 'YOLOv8', 'Jetson Nano', 'OpenCV', 'Python'],
+	  image: '/images/projects/p8.jpg',
+	  institution: 'Tecnológico de Monterrey',
+	  location: 'Monterrey, Mexico',
+	  company: 'Manchester Robotics',
+	  logo: '/images/companies/manchester.png',
+	  repoUrl: '',
+	  description: 'Full description here.',
 	},
 	{
 	  slug: 'p2',
-	  title: 'Line Following Robot',
-	  summary: 'PID-controlled differential drive robot that follows a line at high speed with sensor fusion.',
-	  tags: ['PID', 'Arduino', 'C++', 'Sensor Fusion'],
-	  image: '/images/projects/line-follower.jpg',
-	  repoUrl: 'https://github.com/raymundo140/line-follower',
+	  title: 'Autonomous Tractor Navigation System – John Deere',
+	  summary: 'Scale autonomous tractor for John Deere that receives GPS coordinates via WiFi and navigates autonomously using encoder and IMU feedback.',
+	  tags: ['STM32', 'Raspberry Pi', 'FreeRTOS', 'CAN', 'Python'],
+	  image: '/images/projects/p9.jpg',
+	  institution: 'Tecnológico de Monterrey',
+	  location: 'Monterrey, Mexico',
+	  company: 'John Deere',
+	  logo: '/images/companies/jd.png',
+	  repoUrl: '',
 	  description: 'Full description here.',
 	},
 	{
 	  slug: 'p3',
-	  title: 'SLAM Indoor Mapping',
-	  summary: 'Implemented GMapping SLAM on a TurtleBot3 to autonomously map unknown environments.',
-	  tags: ['ROS', 'SLAM', 'LiDAR', 'Python'],
-	  image: '/images/projects/slam.jpg',
-	  repoUrl: 'https://github.com/raymundo140/slam-mapping',
+	  title: 'STM32 Dual-Elevator Embedded System with Greedy Algorithm',
+	  summary: 'Scale two-elevator system implementing a greedy scheduling algorithm with sensor and actuator integration for autonomous floor navigation.',
+	  tags: ['Embedded Systems', 'Algorithms', 'Sensors', 'Actuators'],
+	  image: '/images/projects/p6.jpg',
+	  institution: 'University of Seoul',
+	  location: 'Seoul, South Korea',
+	  logo: '/images/education/e2.png',
+	  repoUrl: '',
 	  description: 'Full description here.',
 	},
 	{
 	  slug: 'p4',
-	  title: 'Vision-Based Object Sorter',
-	  summary: 'Real-time object classification and sorting pipeline using YOLOv8 and a conveyor system.',
-	  tags: ['YOLOv8', 'Python', 'OpenCV', 'Raspberry Pi'],
-	  image: '/images/projects/sorter.jpg',
-	  repoUrl: 'https://github.com/raymundo140/vision-sorter',
+	  title: 'Tractor Telemetry & Control Embedded System — John Deere',
+	  summary: 'STM32 + Raspberry Pi system that collects tractor sensor data, processes it, and enables real-time simulation control via sensors and actuators.',
+	  tags: ['STM32', 'Raspberry Pi', 'Telemetry', 'Linux', 'C'],
+	  image: '/images/projects/p10.jpg',
+	  institution: 'Tecnológico de Monterrey',
+	  location: 'Monterrey, Mexico',
+	  company: 'John Deere',
+	  logo: '/images/companies/jd.png',
+	  repoUrl: '',
 	  description: 'Full description here.',
 	},
 	{
 	  slug: 'p5',
-	  title: 'Quadrotor Attitude Control',
-	  summary: 'Designed and tuned a cascaded PID controller for stable quadrotor hover and trajectory tracking.',
-	  tags: ['Control Systems', 'MATLAB', 'Simulink', 'Python'],
-	  image: '/images/projects/drone.jpg',
-	  repoUrl: 'https://github.com/raymundo140/drone-pid',
+	  title: 'FPGA Tractor Hardware-in-the-Loop Simulation — John Deere',
+	  summary: 'FPGA system programmed in VHDL and Assembly that captures real hardware inputs (wheel, pedals) and drives a custom Ubuntu tractor simulation.',
+	  tags: ['FPGA', 'VHDL', 'Assembly', 'Ubuntu', 'Simulation'],
+	  image: '/images/projects/p11.jpg',
+	  institution: 'Tecnológico de Monterrey',
+	  location: 'Monterrey, Mexico',
+	  company: 'John Deere',
+	  logo: '/images/companies/jd.png',
+	  repoUrl: '',
 	  description: 'Full description here.',
 	},
-  ];
-
+	{
+	  slug: 'p6',
+	  title: 'IoT Smart Agriculture & Sustainability Platform',
+	  summary: 'IoT system monitoring plant and soil health using sensors and actuators, with automated irrigation and a real-time web dashboard.',
+	  tags: ['IoT', 'Sensors', 'Web Dashboard', 'Automation'],
+	  image: '/images/projects/p7.jpg',
+	  institution: 'Beijing Institute of Technology',
+	  location: 'Beijing, China',
+	  logo: '/images/education/e3.png',
+	  repoUrl: '',
+	  description: 'Full description here.',
+	},
+  ]
 
   //Work Experience
   export type WorkExperience = {

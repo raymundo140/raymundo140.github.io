@@ -21,13 +21,14 @@ if (!entry) {
 const { Content } = await render(entry)
 const item = research.find(r => r.slug === slug)
 const { title, institution, location, date, tags, logo } = entry.data
+const { role, status, abstract, pdfUrl, pdfLabel } = item!
 ---
 
 <Layout>
   <div class='max-w-4xl mx-auto py-12'>
 
-    <a href={base + '/research'} class='btn btn-ghost btn-sm mb-8 -ml-2'>
-      ← Back to Research
+    <a href={base + '/'} class='btn btn-ghost btn-sm mb-8 -ml-2'>
+      ← Back to Home
     </a>
 
     <div class='flex items-start gap-6 mb-10'>
@@ -36,31 +37,46 @@ const { title, institution, location, date, tags, logo } = entry.data
       </div>
       <div class='flex flex-col gap-1'>
         <h1 class='text-3xl font-bold'>{title}</h1>
-        <p class='text-lg text-base-content/70'>Guest Lecturer & Researcher · {institution}</p>
+        <p class='text-lg text-base-content/70'>{role} · {institution}</p>
         <p class='text-sm text-base-content/50'>{location} · {date}</p>
+        <span class='badge badge-outline badge-sm w-fit mt-1'>{status}</span>
         <div class='flex flex-wrap gap-1 mt-2'>
           {tags.map(tag => <span class='badge badge-outline badge-sm'>{tag}</span>)}
         </div>
       </div>
     </div>
 
-    {/* MDX content (abstract, notes, etc.) */}
+    {/* Full abstract */}
+    {abstract && (
+      <div class='mb-10'>
+        <h2 class='text-xl font-bold mb-3'>Abstract</h2>
+        <p class='text-base-content/80 leading-relaxed whitespace-pre-line'>{abstract}</p>
+      </div>
+    )}
+
+    {/* MDX content (additional notes) */}
     <div class='prose prose-lg max-w-none mb-10'>
       <Content />
     </div>
 
-    {/* Embedded PDF */}
-    <div class='border border-base-300 rounded-2xl overflow-hidden'>
-      <div class='bg-base-200 px-4 py-3 border-b border-base-300'>
-        <p class='text-sm font-semibold'>📄 Full Paper</p>
+    {/* Paper */}
+    {pdfUrl ? (
+      <div class='border border-base-300 rounded-2xl overflow-hidden'>
+        <div class='bg-base-200 px-4 py-3 border-b border-base-300'>
+          <p class='text-sm font-semibold'>📄 {pdfLabel || 'Full Paper'}</p>
+        </div>
+        <iframe
+          src={pdfUrl}
+          class='w-full'
+          style='height: 80vh;'
+          title={title}
+        />
       </div>
-      <iframe
-        src='/papers/research_paper.pdf'
-        class='w-full'
-        style='height: 80vh;'
-        title={title}
-      />
-    </div>
+    ) : status === 'In Preparation' ? (
+      <div class='border border-base-300 rounded-2xl p-6 bg-base-200 text-center'>
+        <p class='text-sm font-semibold text-base-content/60'>📄 In Preparation — paper not yet available</p>
+      </div>
+    ) : null}
 
   </div>
 </Layout>

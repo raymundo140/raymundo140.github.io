@@ -117,31 +117,32 @@ export type Project = {
   
   export const experiences: WorkExperience[] = [
 	{
-	  slug: 'w1',
-	  company: 'AIST – National Institute of Advanced Industrial Science and Technology',
-	  title: 'Robotics Research Intern',
-	  location: 'Tsukuba, Japan',
-	  dateRange: 'Mar 2026 – Sep 2026',
-	  bullets: [
-		'Developed autonomous navigation for a mobile robot integrating LiDAR SLAM for robust operation in complex environments.',
-		'Implemented end-to-end robotic-arm integration on a mobile manipulator with closed-loop control for safe autonomous and teleoperated operation.',
-	  ],
-	  tags: ['ROS2', 'SLAM', 'LiDAR', 'Python', 'Mobile Robots'],
-	  logo: '/images/experience/w1.png',
-	  companyUrl: 'https://www.aist.go.jp/index_en.html',
+		slug: 'w1',
+		company: 'AIST – National Institute of Advanced Industrial Science and Technology',
+		title: 'Robotics Research Intern',
+		location: 'Tsukuba, Japan',
+		dateRange: 'Mar 2026 – Sep 2026',
+		bullets: [
+			'Developing an autonomous restocking system for the CALL-M mobile manipulator robot, integrating navigation, perception, QR-based identification, and robotic manipulation for convenience store environments.',
+			'Implementing autonomous 3D mapping using SLAM Toolbox and frontier-based exploration, enabling CALL-M to map unknown indoor environments without teleoperation.',
+			'Co-authoring a research paper on autonomous door-opening using CALL-M, involving arm motion planning, door handle detection, and mobile base coordination.',
+		],
+		tags: ['ROS2', 'SLAM', 'Nav2', 'MoveIt2', 'UR5e', 'LiDAR', 'Python', 'Mobile Manipulation'],
+		logo: '/images/experience/w1.png',
+		companyUrl: 'https://www.aist.go.jp/index_en.html',
 	},
 	{
-	  slug: 'w2',
-	  company: 'Smart Factory MTY',
-	  title: 'Robotics Engineer Intern',
-	  location: 'Monterrey, Mexico',
-	  dateRange: 'Feb 2024 – Jun 2024',
-	  bullets: [
-		'Assembled, diagnosed, and repaired industrial robots (UR3/UR5, xArm, Baxter, ABB YuMi), reducing downtime by 20%.',
-		'Engineered a high-precision end-effector mounted on an industrial robot, increasing throughput by 30%.',
-	  ],
-	  tags: ['Industrial Robots', 'SolidWorks', '3D Printing', 'Electrical/Mechanical'],
-	  logo: '/images/experience/w2.png',
+		slug: 'w2',
+		company: 'Smart Factory MTY',
+		title: 'Robotics Engineer Intern',
+		location: 'Monterrey, Mexico',
+		dateRange: 'Feb 2024 – Jun 2024',
+		bullets: [
+			'Assembled, diagnosed, repaired and calibrated industrial robots (UR3/UR5, xArm 5/6, Baxter, ABB YuMi) for manufacturing applications, reducing downtime by 20% through root-cause diagnostics and preventive maintenance.',
+			'Designed and built a high-precision gripper for pick-and-place tasks using SolidWorks, 3D printing, and laser cutting, increasing production throughput by 30% validated through production-cell testing.',
+		],
+		tags: ['Industrial Robots', 'SolidWorks', '3D Printing', 'Laser Cutting', 'Electrical/Mechanical'],
+		logo: '/images/experience/w2.png',
 	},
 	{
 	  slug: 'w3',
@@ -186,30 +187,77 @@ export type Project = {
   ]
 
 // Research
-  export type Research = {
-	slug: string;
-	title: string;
-	institution: string;
-	location: string;
-	date: string;
-	bullets: string[];
-	tags: string[];
-	logo: string;
-  };
-  
+	export type Research = {
+		slug: string;
+		title: string;
+		institution: string;
+		location: string;
+		date: string;
+		role?: string;
+		status: string; // e.g. "Published" / "In Preparation" / "Invited Talk"
+		summary: string; // short 2-3 sentence version shown by default
+		abstract?: string; // full abstract text, revealed via "Read more" (omit when not applicable, e.g. talks)
+		tags: string[];
+		logo: string;
+		pdfUrl?: string;
+		pdfLabel?: string; // overrides the default "Read Paper" button/section label
+	};
+
   export const research: Research[] = [
 	{
-	  slug: 'research_paper',
+	  slug: 'guest-lecture-uos',
 	  title: 'Neuromorphic Computing and Memristor-Based Devices in Intelligent Robotics',
 	  institution: 'University of Seoul',
 	  location: 'Seoul, South Korea',
 	  date: 'Dec 2025',
-	  bullets: [
-		'Authored a faculty-reviewed research paper analyzing solid-state device physics and linking neuromorphic/memristor capabilities to energy-efficient intelligent robotics.',
-		'Invited by the engineering faculty to deliver a lecture to an international cohort on neuromorphic architectures and hardware-accelerated AI systems.',
-	  ],
+	  role: 'Guest Lecturer & Researcher',
+	  status: 'Invited Talk',
+	  summary: 'Conducted research on solid-state device physics, connecting neuromorphic and memristor-based capabilities to energy-efficient intelligent robotics. Invited by the engineering faculty to deliver a lecture to an international cohort on neuromorphic architectures and hardware-accelerated AI systems.',
 	  tags: ['Neuromorphic Computing', 'Memristors', 'Robotics', 'AI Hardware', 'Research'],
 	  logo: '/images/research/r1.png',
+	  pdfUrl: '/papers/guest-lecture-uos.pdf',
+	  pdfLabel: 'View Documentation',
+	},
+	{
+	  slug: 'supervised-ros2-mapping',
+	  title: 'A Supervised ROS 2 Architecture for Autonomous Mapping: Modular Exploration-Management Framework',
+	  institution: 'CNRS-AIST Joint Robotics Laboratory',
+	  location: 'Tsukuba, Japan',
+	  date: '2026',
+	  role: 'Researcher',
+	  status: 'Published',
+	  summary: 'A modular ROS 2 architecture for autonomous mapping in mobile robots operating in unknown, dynamic indoor environments, combining multimodal scan fusion, static-dynamic obstacle filtering, SLAM, and frontier-based exploration under a supervising program manager. The exploration-management framework governs candidate evaluation, navigation-goal supervision, failure recovery, and mission completion, and can be adopted by any Nav2-compatible ROS 2 mobile-robot stack through configuration alone. Validated in simulation and on the physical CALL-M mobile manipulator.',
+	  abstract: 'This paper presents a modular ROS 2 architecture for autonomous mapping in mobile robots operating within unknown and dynamic indoor environments. The proposed system integrates multimodal scan fusion, a static–dynamic obstacle-filtering module, SLAM-based map construction, frontier-based exploration, and Nav2-based navigation, coordinated by a program manager that governs the mission from distributed launch through coordinated termination. Beyond this supervised software system, the architecture is organized around a modular ROS 2 exploration-management framework that extends beyond frontier detection to govern candidate evaluation, navigation-goal supervision, failure recovery, and mission completion. Requiring only an occupancy-grid map, robot-pose information through TF, and a Nav2-compatible navigation interface, the framework may be adopted by compatible ROS 2 mobile-robot stacks through external configuration, without modification of its underlying implementation. The complete system is validated in simulation and on the physical CALL-M mobile manipulator.',
+	  tags: ['ROS2', 'SLAM', 'Nav2', 'Autonomous Mapping', 'Frontier Exploration', 'Mobile Manipulation'],
+	  logo: '/images/experience/w1.png',
+	  pdfUrl: '/papers/supervised-ros2-mapping.pdf',
+	},
+	{
+	  slug: 'static-dynamic-obstacle-filtering',
+	  title: 'A ROS 2 Static–Dynamic Obstacle Filtering Framework for Robust Mapping in Dynamic Environments',
+	  institution: 'CNRS-AIST Joint Robotics Laboratory',
+	  location: 'Tsukuba, Japan',
+	  date: '2026',
+	  role: 'Researcher',
+	  status: 'In Preparation',
+	  summary: 'A modular ROS 2 framework that separates static environmental structure from dynamic obstacles in LaserScan-based mapping and navigation, producing a clean static scan for SLAM and a dynamic scan for real-time obstacle avoidance. Designed as a reusable preprocessing layer for mobile robots operating in dynamic indoor environments.',
+	  abstract: 'This work presents a modular ROS 2 framework for separating static environmental structure from dynamic obstacles in LaserScan-based robotic mapping and navigation. The framework processes unified multimodal range observations to distinguish persistent structures from transient measurements, providing a static scan for SLAM-based map construction and a dynamic scan for real-time obstacle avoidance. In addition, dynamic observations may be tracked to estimate obstacle motion while preserving compatibility with conventional ROS 2 LaserScan interfaces. The approach is designed as a reusable preprocessing layer for mobile robots operating in dynamic indoor environments, improving map consistency while retaining moving obstacles for navigation and collision avoidance.',
+	  tags: ['ROS2', 'LiDAR', 'Obstacle Filtering', 'SLAM', 'Dynamic Environments'],
+	  logo: '/images/experience/w1.png',
+	},
+	{
+	  slug: 'door-opening-mobile-manipulator',
+	  title: 'An Integrated Perception, Navigation, and Manipulation Pipeline for Semi-Autonomous Door Opening with a Mobile Manipulator',
+	  institution: 'CNRS-AIST Joint Robotics Laboratory',
+	  location: 'Tsukuba, Japan',
+	  date: '2026',
+	  role: 'Researcher',
+	  status: 'Published',
+	  summary: 'A semi-autonomous door-opening pipeline for a mobile manipulator that integrates perception, navigation, localization, and manipulation to detect and approach a door, estimate handle position, align the base, and execute handle manipulation. Evaluated in 20 real-robot trials, achieving 100% success in perception, navigation, and alignment, and 80% success in complete door opening.',
+	  abstract: 'Autonomous door opening is a key capability for service robots. It requires integration of perception, navigation, localization, and manipulation. This paper presents a semi-autonomous door-opening pipeline for a mobile manipulator. The system requires manual initialization of the robot pose in Rviz; it autonomously detects and approaches the door, estimates the 3D handle position, aligns the mobile base, performs the pre-grasp positioning, and executes handle manipulation and door opening. The system was evaluated on a real mobile manipulator in 20 trials: 10 nominal operation trials, 5 trials with varying initial robot-to-door distance, and 5 trials varying initial end effector height. In nominal condition, door perception, navigation, 3D localization, alignment and pre-grasp positioning were successful 100% of the time, while the complete door opening succeeds 80% of the time. The system successfully handled the initial robot-to-door distance in four of five trials. However, changes in the initial end effector height reduced performance, completing only one of five trials. Failures occurred mainly in the contact and interaction between the handle and the gripper. Physical handle manipulation is the main limitation of the current system.',
+	  tags: ['ROS2', 'Manipulation', 'Perception', 'Navigation', 'Mobile Manipulator', 'Door Opening'],
+	  logo: '/images/experience/w1.png',
+	  pdfUrl: '/papers/door-opening-mobile-manipulator.pdf',
 	},
   ]
 

@@ -5,11 +5,14 @@ interface Props {
   base?: string
 }
 const { item, base = '' } = Astro.props
-const { slug, title, institution, location, date, bullets, tags, logo } = item
+const { slug, title, institution, location, date, role, status, summary, abstract, tags, logo, pdfUrl, pdfLabel } = item
 const href = base + '/research/' + slug
+const toggleId = `research-abstract-${slug}`
 ---
 
-<a href={href} class="block bg-base-200 border border-base-300 rounded-2xl p-6 hover:shadow-md hover:border-base-content/80 transition-all duration-200 group cursor-pointer no-underline">
+<div class="relative bg-base-200 border border-base-300 rounded-2xl p-6 hover:shadow-md hover:border-base-content/80 transition-all duration-200 group">
+  <a href={href} class="absolute inset-0 z-10 rounded-2xl" aria-label={`View details: ${title}`}></a>
+
   <div class="flex items-start gap-5">
 
     <div class="shrink-0 w-14 h-14 rounded-xl border border-base-300 bg-base-100 overflow-hidden flex items-center justify-center">
@@ -22,36 +25,47 @@ const href = base + '/research/' + slug
     </div>
 
     <div class="flex flex-col gap-2 flex-1 min-w-0">
-      <div class="flex items-start justify-between gap-4 flex-wrap">
-        <div>
-          <h3 class="font-bold text-base group-hover:font-extrabold transition-all leading-snug">
+
+      <div class="flex items-start justify-between gap-4">
+        <div class="flex-1 min-w-0">
+          <h3 class="font-bold text-base group-hover:font-extrabold transition-all leading-snug text-base-content">
             {title}
           </h3>
-          <p class="text-sm text-base-content/60">Guest Lecturer & Researcher · {institution}</p>
+          <p class="text-sm text-base-content/60">{role} · {institution}</p>
         </div>
-        <div class="text-right shrink-0">
+        <div class="text-right shrink-0 min-w-[80px]">
           <span class="text-sm font-medium text-base-content/70">{date}</span>
           <p class="text-xs text-base-content/50">{location}</p>
         </div>
       </div>
 
-      <ul class="mt-1 space-y-1">
-        {bullets.map(b => (
-          <li class="text-sm text-base-content/75 flex gap-2 items-baseline">
-            <span class="text-base-content/60 shrink-0">▸</span>
-            <span>{b}</span>
-          </li>
-        ))}
-      </ul>
+      <span class="badge badge-outline badge-sm w-fit">{status}</span>
 
-      <div class="flex flex-wrap gap-1 mt-2">
+      <p class="text-sm text-base-content/75">{summary}</p>
+
+      {abstract && (
+        <div class="relative z-20 w-fit">
+          <input type="checkbox" id={toggleId} class="peer hidden" />
+          <p class="hidden peer-checked:block text-sm text-base-content/75 whitespace-pre-line">{abstract}</p>
+          <label for={toggleId} class="peer-checked:hidden text-sm font-semibold text-base-content/60 cursor-pointer select-none w-fit">Read more ▾</label>
+          <label for={toggleId} class="hidden peer-checked:inline-block text-sm font-semibold text-base-content/60 cursor-pointer select-none w-fit">Show less ▴</label>
+        </div>
+      )}
+
+      <div class="flex flex-wrap gap-1 mt-1">
         {tags.map(tag => (
           <span class="badge badge-outline badge-sm">{tag}</span>
         ))}
       </div>
 
-      <div class="mt-2 text-sm font-semibold text-base-content/60">View paper →</div>
-    </div>
+      <div class="flex items-center gap-4 mt-2 relative z-20">
+        {pdfUrl ? (
+          <a href={pdfUrl} target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline">{pdfLabel || 'Read Paper'}</a>
+        ) : status === 'In Preparation' ? (
+          <span class="text-sm text-base-content/50 italic">In Preparation</span>
+        ) : null}
+      </div>
 
+    </div>
   </div>
-</a>
+</div>

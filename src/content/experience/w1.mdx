@@ -3,228 +3,83 @@ title: "Robotics Research Intern"
 company: "AIST – National Institute of Advanced Industrial Science and Technology"
 location: "Tsukuba, Japan"
 dateRange: "Jan 2026 – Sep 2026"
-tags: ["ROS2", "SLAM", "Nav2", "MoveIt2", "UR5e", "LiDAR", "Python", "Reinforcement Learning", "Mobile Manipulation", "Sensor Fusion", "Frontier Exploration", "Gazebo", "RViz", "Foxglove"]
+tags: ["ROS 2", "SLAM", "Nav2", "LiDAR", "RGB-D", "Mobile Manipulation", "Frontier Exploration", "Python", "C++"]
 logo: "/images/experience/w1.png"
 companyUrl: "https://www.aist.go.jp/index_en.html"
 ---
 
 ## Overview
 
-At the CNRS-AIST Joint Robotics Laboratory (JRL) in Tsukuba, Japan, I worked on autonomous mobile manipulation using CALL-M, a research mobile manipulator designed for operation in human-centered indoor environments.
+At the CNRS-AIST Joint Robotics Laboratory in Tsukuba, I worked on autonomous mobile manipulation using CALL-M, a research mobile manipulator built for operation in human-centered indoor environments.
 
-My work focused on two main robotics research projects:
+My work centered on two research projects:
 
-1. Autonomous mapping and exploration in unknown and dynamic environments.
-2. Autonomous door opening through integrated perception, navigation, and manipulation.
+- Autonomous mapping and exploration in unknown, dynamic environments.
+- Autonomous door opening through integrated perception, navigation, and manipulation.
 
-Across both projects, I worked on the full robotics stack rather than a single isolated subsystem. My work included ROS 2 software architecture, LiDAR and RGB-D perception, point-cloud processing, coordinate transforms, SLAM, autonomous exploration, Nav2 navigation, dynamic-obstacle handling, mobile-base control, robot manipulation, system integration, distributed execution, real-robot testing, experimental evaluation, failure analysis, and research writing.
+Across both projects, I worked on ROS 2 architecture, LiDAR/RGB-D perception, point clouds, TF, SLAM, frontier exploration, Nav2, dynamic-obstacle filtering, mobile-base control, manipulation, distributed execution, real-robot testing, failure analysis, and research writing.
 
-The work also resulted in three research-paper efforts: two related to autonomous mapping and one related to autonomous door opening.
+## CALL-M
 
----
+CALL-M combines:
 
-## Project 1 — Autonomous Mapping and Exploration
+- TriOrb omnidirectional mobile base.
+- UR5e manipulator.
+- Robotiq 2F-85 gripper.
+- RPLIDAR sensors.
+- ZED Mini stereo cameras.
+- Intel RealSense D435i.
+- Onboard Intel and NVIDIA compute.
 
-The first major project focused on enabling CALL-M to autonomously explore and map unknown indoor environments.
+## Project 1 — Autonomous Mapping
 
-The goal was not simply to run SLAM while manually driving the robot. I designed a complete ROS 2 architecture that could decide where to explore, generate navigation targets, supervise Nav2 goals, recover from failures, distinguish persistent structure from moving objects, track exploration progress, and determine when the mapping mission had finished.
+I developed a modular ROS 2 architecture that lets CALL-M autonomously explore an unknown environment, build an occupancy map, supervise navigation goals, recover from failures, filter moving objects, and stop when exploration is complete.
 
-The system was built as a modular and distributed ROS 2 architecture so that individual components could be developed, tested, configured, and reused independently.
+My main contributions included:
 
-The complete mapping pipeline integrated:
+- Multimodal range-sensor integration.
+- Frontier extraction and target evaluation.
+- Nav2 goal dispatch and supervision.
+- Timeout and failure recovery.
+- Spatial memory of failed targets.
+- Mission-progress tracking.
+- Mission-completion logic.
+- Static–dynamic obstacle separation.
+- Object clustering, tracking, and velocity estimation.
+- Simulation and physical-robot validation.
 
-- LiDAR and RGB-D sensing
-- Multimodal scan fusion
-- Static–dynamic obstacle filtering
-- SLAM Toolbox
-- Frontier detection
-- Autonomous target selection
-- Navigation-goal supervision
-- Failure recovery
-- Mission-progress monitoring
-- Nav2 planning and control
-- Real-time execution on the CALL-M mobile manipulator
-
-### Multimodal Perception and Sensor Fusion
-
-CALL-M uses multiple sensing modalities to perceive its surroundings. My mapping architecture integrated LiDAR and RGB-D information into a common representation that could be consumed by SLAM and navigation.
-
-This required handling sensor data from different devices and coordinate frames, transforming observations through the ROS 2 TF tree, and producing a consistent representation of the environment.
-
-The perception pipeline combined information from the robot's LiDAR and RGB-D sensors so that the mapping system had broader environmental coverage than it would have obtained from a single sensor. The fused data was then used by the mapping, obstacle-filtering, and navigation components.
-
-### SLAM and Map Construction
-
-SLAM Toolbox was used to construct the occupancy-grid map while the robot moved through the environment.
-
-Rather than treating SLAM as an isolated component, I integrated it into a larger autonomous-mapping system. The SLAM output was continuously consumed by the exploration framework, which searched for unexplored boundaries and decided where the robot should move next.
-
-The resulting architecture connected perception, mapping, exploration, navigation, and supervision in one continuous autonomous loop.
-
-### Autonomous Exploration-Management Framework
-
-One of my main contributions was the development of a reusable ROS 2 framework for autonomous exploration management.
-
-A simple frontier-exploration algorithm can detect unexplored boundaries and send a goal to the nearest one. In a real robotic system, however, that is not enough. Navigation goals can fail. A frontier can become unreachable. The robot can repeatedly select targets in problematic regions. Different ROS 2 callbacks can compete to issue goals. A mission can appear active even when meaningful exploration has stopped.
-
-I therefore developed a supervisory framework that manages the complete exploration process instead of only selecting the next frontier. The framework includes:
-
-- Frontier extraction and clustering
-- Candidate-target generation
-- Target scoring and selection
-- Navigation-goal dispatch
-- Active-goal supervision
-- Timeout monitoring
-- Failure detection and recovery behavior
-- Spatial memory of failed targets
-- Temporary exclusion of problematic regions
-- Exploration-progress tracking
-- Mission-completion logic
-- Protection against competing asynchronous actions
-- Configurable parameters for different environments and robots
-
-The framework sits above Nav2 and treats autonomous exploration as a supervised mission rather than a sequence of independent navigation requests. This made the system more robust during long autonomous runs and reduced repeated attempts to navigate toward poor or unreachable targets.
-
-### Frontier Selection
-
-The exploration manager identifies frontier regions at the boundary between known free space and unexplored space. Candidate frontiers are grouped and evaluated before a navigation target is selected.
-
-Instead of relying only on the nearest target, the framework can account for information such as frontier size, distance from the robot, direction of travel, recently attempted goals, previously failed regions, and whether the selected location remains valid as the map changes. This allows the robot to make more deliberate exploration decisions and avoid repeatedly selecting low-value or problematic targets.
-
-### Goal Supervision and Failure Recovery
-
-A central part of my work was managing what happens after a navigation goal is sent. The framework monitors the state of the active goal and determines whether navigation is progressing normally.
-
-If a goal fails, becomes invalid, or exceeds the allowed execution time, the system can reject the target, update its spatial memory, and choose a different frontier. This is important because autonomous mapping must continue operating without requiring a human to manually reset the navigation system each time a goal fails.
-
-### Mission Completion
-
-Another problem I addressed was deciding when autonomous exploration should stop. A mapping system should not continue generating targets indefinitely once the useful reachable environment has already been explored.
-
-The framework therefore monitors exploration progress and the availability of valid frontier candidates. When the system determines that meaningful exploration is complete, it can terminate the mission automatically, making the architecture suitable for unattended autonomous mapping rather than only short demonstrations.
-
-### Static–Dynamic Obstacle-Filtering Framework
-
-My second major contribution to the mapping project was a reusable ROS 2 framework for separating static structure from moving obstacles.
-
-Dynamic objects create a major problem for conventional mapping systems: if a person walks through the environment while the robot is building an occupancy map, the person's LiDAR or depth measurements can be integrated into the map and incorrectly stored as permanent structure. The purpose of the framework was therefore to distinguish observations that represent persistent environmental geometry from observations that are likely to belong to moving objects.
-
-The pipeline includes:
-
-- Processing of incoming scan data
-- Temporal comparison of observations
-- Separation of static and dynamic measurements
-- Spatial clustering of dynamic observations
-- Bounding-box generation
-- Object association across frames
-- Object tracking and velocity estimation
-- Separate static and dynamic outputs
-
-The static component can be sent to the mapping subsystem so that SLAM primarily receives persistent environmental structure, while the dynamic component remains available to the navigation stack so that moving people or objects can still be detected and avoided. The goal is not to make moving obstacles invisible to the robot — it is to prevent them from becoming permanent artifacts in the map while still preserving them for safe real-time navigation.
-
-### Distributed ROS 2 Architecture
-
-The complete autonomous-mapping system was distributed across the robot's onboard computers and the operator workstation. This required coordinating multiple ROS 2 nodes, sensors, transforms, navigation components, and visualization tools over the network.
-
-The architecture was designed so that individual subsystems could be configured independently and reused in future robotic platforms. This work gave me extensive experience debugging distributed robotics systems, including timing, transforms, topic flow, node coordination, sensor consistency, and interactions between navigation and perception components.
-
-### Simulation and Real-Robot Validation
-
-I validated the mapping architecture in both simulation and on the physical CALL-M platform. Simulation was used to test exploration behavior, navigation supervision, recovery logic, and system-level performance in controlled environments. The physical-robot experiments were then used to evaluate the complete stack under real sensing, networking, localization, navigation, and dynamic-environment conditions.
-
-The real-robot deployment required the full system to operate simultaneously — physical LiDAR and RGB-D sensors, TF transforms, sensor fusion, obstacle filtering, SLAM, frontier generation, target selection, Nav2, goal supervision, robot motion, and distributed ROS 2 communication — resulting in a complete end-to-end autonomous-mapping system rather than a standalone algorithm.
-
----
-
-### Research Paper — Autonomous Mapping Architecture
-
-**A ROS 2 Architecture for Autonomous Mapping: Modular Exploration Management and Static–Dynamic Obstacle Filtering Frameworks**
-
-- Role: First author
-- Research conducted at: CNRS-AIST JRL, Tsukuba, Japan
-- Submission: IEEE/SICE SII 2027
-
-This paper presents the complete autonomous-mapping architecture developed during my internship, describing how ROS 2, multimodal perception, SLAM Toolbox, Nav2, autonomous exploration, navigation supervision, and dynamic-obstacle filtering were integrated into one modular system. A major focus of the paper is the exploration-management framework — frontier extraction, candidate evaluation, target selection, goal supervision, failure recovery, progress monitoring, and mission-completion logic — alongside the static–dynamic obstacle-filtering framework and how separating persistent and moving observations can improve mapping in dynamic environments. The system was evaluated through simulation and real-robot experiments on CALL-M.
-
-### Research Paper — Static–Dynamic Obstacle Filtering
-
-**Static–Dynamic Obstacle Filtering for Autonomous Robotic Mapping** *(working title)*
-
-This research effort focuses specifically on the dynamic-environment perception problem that emerged from the autonomous-mapping project — how a mobile robot can distinguish persistent environmental structure from moving obstacles before information is incorporated into the map. The framework covers scan-level processing, temporal observation analysis, static/dynamic classification, spatial clustering, object tracking, velocity estimation, and separate mapping and navigation outputs. The central idea is to preserve moving objects for real-time collision avoidance while reducing the probability that those objects are incorrectly stored as permanent occupancy-grid obstacles.
-
----
+The exploration architecture completed 10/10 simulated missions compared with 7/10 for a nearest-frontier baseline, and all 5/5 physical mapping sessions reached autonomous completion.
 
 ## Project 2 — Autonomous Door Opening
 
-My second major AIST project focused on autonomous door opening with CALL-M. This project required tighter integration between perception, navigation, mobile-base positioning, manipulation, and physical contact with the environment.
+I also worked on a mobile-manipulation pipeline for autonomous door opening. The system:
 
-The goal was to create a ROS 2 pipeline capable of finding a door, approaching it autonomously, detecting and localizing the door handle, aligning the mobile base, moving the robot arm to a pre-grasp configuration, grasping and actuating the handle, and opening the door. Unlike autonomous mapping, where the robot interacts mainly with free space and obstacles, door opening requires precise physical interaction with the environment — small perception or positioning errors can directly affect whether the robot can grasp and actuate the handle.
+- Detects a door using machine-learning-based perception.
+- Approaches it using Nav2.
+- Localizes the handle in 3D from RGB-D data.
+- Transforms the target through ROS 2 TF.
+- Aligns the omnidirectional base.
+- Moves the UR5e to a pre-grasp pose.
+- Grasps and actuates the handle.
+- Executes the door-opening motion.
 
-### Door Perception
+The pipeline was tested in 20 real-robot trials. In the 10 nominal trials, perception, navigation, 3D localization, alignment, and pre-grasp each succeeded 10/10; complete door opening succeeded 8/10. The experiments identified physical contact and manipulation geometry as the main remaining limitations.
 
-The perception system uses camera-based machine learning to detect the target door and door handle. During the search stage, the robot observes the environment until the target door is detected. Once a door is identified, the detection is combined with RGB-D information to estimate the target in 3D — depth and point-cloud data recover the spatial position of the handle rather than relying only on a 2D image detection. The resulting position is then transformed through the ROS 2 TF tree into the coordinate frames required by the mobile base and manipulator.
+## Research Output
 
-### Autonomous Navigation
+My AIST work resulted in three research-paper efforts:
 
-After the target door is detected, Nav2 is used to move CALL-M toward an approach position, bringing the robot close enough for manipulation while maintaining sufficient distance for the arm to operate. This required coordinating the perception output with the mobile navigation system and ensuring that the robot approached the door from a usable configuration.
-
-### Handle Localization
-
-The handle-detection pipeline combines visual detection and RGB-D sensing to estimate the handle's 3D position. This stage connects perception directly to manipulation — the system must not only determine that a handle is present, but estimate where it is relative to the robot so that the mobile base and arm can move to a valid manipulation pose.
-
-### Fine Base Alignment
-
-After the coarse Nav2 approach, the mobile base performs a finer alignment step that compensates for residual error from navigation and places the handle inside the robot arm's reachable workspace. Because CALL-M uses an omnidirectional base, the platform can make lateral and rotational corrections without requiring conventional car-like motion — particularly useful when aligning the manipulator with a door handle.
-
-### Arm Manipulation
-
-Once the handle pose is available and the base is aligned, the UR5e manipulator moves toward a pre-grasp position, then performs the physical actions required to open the door: approach the handle, position the end effector, close the gripper, actuate the handle, pull the door, and complete the opening motion. This stage required careful coordination between estimated target pose, arm configuration, gripper behavior, and the geometry of physical contact.
-
-### Real-Robot Experimentation
-
-The complete door-opening system was evaluated in real-robot trials covering the full end-to-end pipeline rather than only individual perception or manipulation components. The experiments made it possible to separate failures caused by perception, navigation, 3D localization, base alignment, pre-grasp positioning, grasp execution, and physical handle interaction.
-
-The results showed that the upstream perception and navigation stages were generally more repeatable than the final physical-interaction stage. The most difficult part of the task was the transition from estimated geometry to real physical contact, where small positioning errors, grasp depth, latch displacement, handle geometry, and force limits can determine whether the door opens successfully. This failure analysis was an important part of the research because it identified where future improvements should be concentrated, including closed-loop pose correction, adaptive manipulation, and more robust contact-aware control.
-
-### Research Paper — Autonomous Door Opening
-
-**Integrated Perception, Navigation, and Manipulation for Autonomous Door Opening with a Mobile Manipulator**
-
-This paper presents the complete door-opening system developed and evaluated on CALL-M, covering machine-learning-based door and handle detection, RGB-D perception, 3D target localization, ROS 2 coordinate transforms, Nav2 autonomous approach, omnidirectional base alignment, UR5e manipulation, grasping, handle actuation, and door opening. A key contribution is the system-level integration of perception, navigation, and manipulation rather than evaluating each subsystem independently, with stage-level failure analysis distinguishing successful perception and navigation from failures that occur during physical manipulation.
-
----
-
-## What I Contributed at AIST
-
-**Robotics Software** — Developed ROS 2 nodes and modular robotics software; integrated distributed robotics components across multiple computers; worked with ROS 2 topics, services, actions, parameters, and TF; integrated perception, SLAM, Nav2, exploration, and manipulation components.
-
-**Autonomous Navigation** — Integrated Nav2 into autonomous research pipelines; developed higher-level supervision around navigation goals; implemented goal monitoring, failure recovery, and target reselection; worked with autonomous exploration in unknown environments.
-
-**Mapping and SLAM** — Integrated SLAM Toolbox into an autonomous exploration architecture; processed multimodal sensor information for mapping; developed logic for exploration progress and mission completion; evaluated mapping behavior in simulation and on physical hardware.
-
-**Dynamic-Environment Perception** — Developed static–dynamic obstacle filtering; worked with LiDAR and RGB-D data; implemented clustering, tracking, and velocity-estimation components; separated information intended for mapping from information needed for real-time navigation.
-
-**Computer Vision and 3D Perception** — Integrated machine-learning-based door and handle detection; worked with RGB-D sensing and point clouds; converted 2D detections into 3D target estimates; used ROS 2 TF to transform targets between sensor, robot, and world frames.
-
-**Mobile Manipulation** — Integrated mobile navigation and arm manipulation; worked with the UR5e manipulator and gripper; developed the sequence from door detection through approach, alignment, grasping, handle actuation, and door opening; evaluated manipulation failures during real physical interaction.
-
-**System Integration** — Worked on complete end-to-end robotic systems rather than isolated algorithms; debugged interactions between perception, navigation, mapping, transforms, networking, and manipulation; deployed software on the physical CALL-M research robot.
-
-**Research** — Designed and executed simulation and physical-robot experiments; performed quantitative evaluation and failure analysis; documented system architecture and experimental methodology; contributed to three robotics research-paper efforts; served as first author on the autonomous-mapping paper submitted to IEEE/SICE SII 2027.
-
----
+1. **A Supervised ROS 2 Architecture for Autonomous Mapping: Modular Exploration-Management Framework** — First author — Submitted to IEEE/SICE SII 2027
+2. **A ROS 2 Static–Dynamic Obstacle Filtering Framework for Robust Mapping in Dynamic Environments** — In Preparation
+3. **An Integrated Perception, Navigation, and Manipulation Pipeline for Semi-Autonomous Door Opening with a Mobile Manipulator** — Second author — Submitted
 
 ## Related Project & Research Pages
 
-- [View Project — A ROS 2 Architecture for Autonomous Mapping (CALL-M)](/projects/p1)
+- [View Project — Autonomous Mapping (CALL-M)](/projects/p1)
 - [View Research — A Supervised ROS 2 Architecture for Autonomous Mapping](/research/supervised-ros2-mapping)
-- [View Project — Semi-Autonomous Door Opening with a Mobile Manipulator](/projects/p2)
+- [View Project — Autonomous Door Opening (CALL-M)](/projects/p2)
 - [View Research — Semi-Autonomous Door Opening Pipeline](/research/door-opening-mobile-manipulator)
 
 ## Closing
 
-My internship at AIST gave me the opportunity to work across nearly the entire autonomy stack on a real mobile manipulator, moving between perception, mapping, autonomous decision-making, navigation, manipulation, distributed software, and physical experimentation depending on what the system needed.
-
-The two projects addressed different sides of intelligent robotics. The autonomous-mapping project focused on long-horizon autonomy: deciding where to explore, supervising repeated navigation actions, recovering from failures, handling moving obstacles, and determining when a mission is complete. The door-opening project focused on perception-to-action integration and physical interaction: detecting a target, approaching it, estimating its 3D position, aligning the robot, manipulating the handle, and analyzing failures during contact.
-
-Together, the projects resulted in three research-paper efforts and extensive hands-on experience developing, integrating, debugging, and evaluating intelligent robotic systems on physical hardware.
+AIST gave me experience building complete robotic systems rather than isolated algorithms. I worked from sensing and coordinate transforms through autonomous decision-making, navigation, manipulation, distributed software, and physical validation.

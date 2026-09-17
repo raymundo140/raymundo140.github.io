@@ -1,31 +1,29 @@
 ---
-title: "Embedded Tractor Telemetry & Control System — John Deere"
-summary: "Embedded tractor control and telemetry prototype built with John Deere using an STM32 and Raspberry Pi, combining real-time task scheduling, UART communication, transmission-model execution, and a multithreaded Python/Tkinter telemetry dashboard."
-tags: ["STM32", "Raspberry Pi", "Real-Time Systems", "UART", "Multithreading", "Telemetry"]
+title: "Embedded Tractor Telemetry & Control — John Deere"
+summary: "STM32 + Raspberry Pi embedded system combining real-time task scheduling, UART telemetry, transmission-model execution, logging, and a multithreaded Python dashboard."
+tags: ["STM32", "Raspberry Pi", "Real-Time Systems", "UART", "Python", "Telemetry"]
 image: "/images/projects/p9.png"
 pdfUrl: "/papers/projects/p9.pdf"
 ---
 
 ## Overview
 
-This project was developed at Tecnológico de Monterrey in collaboration with John Deere as the industry partner for the Design of Systems-on-Chip course. The challenge was to design, implement, and validate a prototype intelligent tractor control system using an STM32 microcontroller and Raspberry Pi, with emphasis on embedded systems, real-time execution, communication between heterogeneous computing platforms, telemetry, and operator interaction.
+Built an embedded tractor-control and telemetry prototype using an STM32 and Raspberry Pi for a John Deere-sponsored systems-on-chip project.
 
-## System Architecture
+## Architecture
 
-The architecture divided responsibilities between an STM32 and a Raspberry Pi. The STM32 served as the real-time embedded controller, handling input acquisition, execution of the tractor transmission model, UART communication, and output devices. The Raspberry Pi provided higher-level processing, telemetry visualization, data logging, and a graphical interface for controlling tractor parameters, with communication between the two platforms implemented through UART.
+The STM32 handled real-time input acquisition, transmission-model execution, UART communication, and hardware outputs. The Raspberry Pi handled telemetry, logging, visualization, and operator interaction.
 
-On the STM32, the application was decomposed into multiple real-time tasks for matrix-keypad input, ADC acquisition, transmission-model execution, UART communication, and LCD output, using periods of 2 ms, 8 ms, 10 ms, 12 ms, and 60 ms respectively with assigned execution priorities. This structure allowed the system to coordinate operator inputs, sensor-like throttle values, model calculations, communication, and displays through a real-time multitasking architecture.
+The STM32 software was divided into periodic tasks for keypad input, ADC acquisition, transmission-model execution, UART communication, and LCD output.
 
-## Hardware Interfaces
+## Telemetry
 
-The prototype included several physical interfaces: a matrix keypad for selecting operating modes and commands, a potentiometer representing throttle input, LCD and OLED displays for system information, LEDs and a servomotor for outputs, and an FTDI interface for serial communication. A physical tractor representation was also designed and produced using 3D printing to support integration and demonstration.
+The Raspberry Pi received live data over UART, logged it to CSV, and displayed parameters such as throttle, engine speed, vehicle speed, and gear. A Tkinter interface also allowed the operator to command throttle in simulation mode.
 
-## Telemetry Dashboard
+## My Contribution — Performance Improvement
 
-The Raspberry Pi software was implemented in Python on Raspberry Pi OS. It received tractor telemetry over the serial connection, stored data in CSV format, and visualized parameters including throttle, engine speed, vehicle speed, and transmission gear in real time. A Tkinter graphical interface provided a throttle slider that could override the physical potentiometer when the STM32 was placed in simulation mode, allowing the operator to send a commanded throttle value from the Raspberry Pi directly into the transmission model.
+The first dashboard implementation coupled serial I/O, logging, and plotting in one path. I reorganized the software with Python threading and a shared queue so data acquisition, storage, and visualization could run independently.
 
-A significant part of the project focused on improving the responsiveness of real-time telemetry visualization. The initial Python implementation performed serial reading, CSV writing, and Matplotlib plot updates inside the same execution path, causing blocking and slow visualization. The software was reorganized so serial acquisition, CSV storage, and visualization were handled independently using Python threading and a queue-based data-sharing mechanism. The plotting update interval was configured to 50 ms, and Matplotlib blitting was used so only changed graphical elements needed to be redrawn, reducing coupling between I/O, storage, and visualization tasks and producing a more responsive telemetry interface.
+## Result
 
-## Results
-
-The complete prototype demonstrated an end-to-end embedded architecture spanning real-time microcontroller firmware, Linux-based processing, serial communication, human-machine interfaces, telemetry logging, real-time visualization, and a physical prototype — providing practical experience integrating C/C++ firmware and Python applications while debugging latency, task synchronization, and communication between embedded devices.
+The final system connected real-time embedded firmware, Linux-based processing, serial communication, operator controls, telemetry logging, and live visualization in one end-to-end prototype.

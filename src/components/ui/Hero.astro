@@ -1,35 +1,37 @@
 ---
 import { Image } from 'astro:assets'
 import SocialIcons from './SocialIcons.astro'
-import { template } from '@/settings'
+import { template, social } from '@/settings'
 const { fullName, title, institute, profilePicture } = Astro.props
 const base = template.base
 ---
 
 <div class='flex-1'>
   <p class='text-sm font-semibold uppercase tracking-wide text-base-content/60 mb-2'>
-    Robotics & AI Engineer
+    Intelligent Robotics & Autonomous Systems Engineer
   </p>
   <h1 class='text-4xl font-bold mb-4'>
     Hi, I'm <span class='text-gray-500'>{fullName}</span>.
   </h1>
   <p class='text-lg mb-4'>
-    Intelligent Robotics & Autonomous Systems Engineer focused on building robotic systems that
-    integrate perception, navigation, manipulation, AI, and embedded control. I am completing my
-    B.S. in Robotics and Digital Systems Engineering at Tecnológico de Monterrey, with
-    international research and engineering experience across Japan, South Korea, China, Canada,
-    and Mexico.
+    I build intelligent robotic systems that connect perception, navigation, manipulation, AI,
+    and embedded control into complete autonomous systems. I'm completing my B.S. in Robotics
+    and Digital Systems Engineering at Tecnológico de Monterrey, with research and engineering
+    experience across Japan, South Korea, China, Canada, and Mexico.
   </p>
   <p class='text-sm text-base-content/60 mb-6'>
-    I recently completed a Robotics Research Internship at AIST (CNRS-AIST Joint Robotics
-    Laboratory) in Tsukuba, Japan. Open to full-time robotics and AI opportunities starting in 2027.
+    I recently completed a robotics research internship at the CNRS-AIST Joint Robotics
+    Laboratory in Tsukuba, Japan, where I developed autonomous mapping and mobile-manipulation
+    systems for the CALL-M research robot. I'm open to full-time robotics opportunities starting
+    in 2027.
   </p>
   <div class='flex flex-wrap gap-3 mb-6'>
     <a href={base + '/projects'} class='btn btn-primary btn-sm'>View Projects</a>
     <a href={base + '/cv'} class='btn btn-outline btn-sm'>View CV</a>
+    <a href='#contact' class='btn btn-outline btn-sm'>Contact Me</a>
   </div>
   <div class='flex flex-col gap-2'>
-    <p class='text-sm font-semibold'>Contact me:</p>
+    <p class='text-sm font-semibold'>Contact: <span class='font-normal text-base-content/70'>{social.email}</span></p>
     <div class='flex gap-4 max-w-xs'>
       <SocialIcons />
     </div>

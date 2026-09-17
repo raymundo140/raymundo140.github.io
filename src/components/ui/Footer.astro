@@ -1,13 +1,18 @@
 ---
 import SocialIcons from './SocialIcons.astro'
+import { social } from '@/settings'
 ---
 
 <footer class='footer footer-center bg-base-100 text-base-content px-4 py-10 gap-3'>
 	<aside class='flex flex-col items-center gap-1'>
 		<p class='font-bold'>Roberto Raymundo Gómez Vargas</p>
-		<p class='text-sm text-base-content/70'>Robotics & AI Engineer</p>
+		<p class='text-sm text-base-content/70'>Intelligent Robotics & Autonomous Systems Engineer</p>
 		<p class='text-sm text-base-content/60 max-w-md'>
-			Building autonomous robotic systems across perception, navigation, manipulation, AI, and embedded systems.
+			Building robotic systems from perception to physical action.
+		</p>
+		<p class='text-sm text-base-content/60'>{social.email}</p>
+		<p class='text-xs text-base-content/50 max-w-md'>
+			ROS 2 · Autonomous Navigation · Perception · Manipulation · Embedded Control
 		</p>
 	</aside>
 	<div class='flex gap-4 max-w-xs'>

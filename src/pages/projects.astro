@@ -12,19 +12,18 @@ const projectList = projects.map(p => ({
 }))
 ---
 
-<Layout title="Projects | Raymundo Gómez Vargas" description="A collection of robotics and engineering projects — from autonomous mobile manipulation to embedded systems and computer vision pipelines.">
+<Layout title="Projects | Raymundo Gómez Vargas" description="Selected robotics projects in autonomous navigation, mobile manipulation, computer vision, embedded systems, AI, and real-time control.">
   <div class='max-w-5xl mx-auto py-12'>
     <div class='mb-12 border-b pb-8'>
       <h1 class='text-4xl font-bold mb-3'>Projects</h1>
       <p class='text-base-content/70 text-lg'>
-        A collection of my robotics and engineering projects — from autonomous systems to
-        computer vision pipelines.
+        Selected robotics projects spanning autonomous navigation, mobile manipulation, computer vision, embedded control, AI, and hardware–software integration.
       </p>
     </div>
     <div class='grid grid-cols-1 sm:grid-cols-2 gap-8'>
       {projectList.map(p => (
         <a href={p.href} class='card bg-base-100 border border-base-300 shadow-sm hover:shadow-md hover:border-base-content/80 transition-all duration-200 group cursor-pointer no-underline'>
-          <div class='relative h-52 overflow-hidden rounded-t-2xl bg-base-300 flex items-center justify-center'>
+          <div class='relative aspect-[1280/583] overflow-hidden rounded-t-2xl bg-base-300 flex items-center justify-center'>
             <img
               src={p.image}
               alt={p.title}

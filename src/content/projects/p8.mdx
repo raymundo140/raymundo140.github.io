@@ -1,26 +1,26 @@
 ---
-title: "IoT Smart Agriculture & Automated Environmental Control Platform"
-summary: "Scale smart-agriculture IoT platform built at Beijing Institute of Technology using a Raspberry Pi, distributed environmental sensors, and automated actuators, closing the loop between sensing, automated irrigation/ventilation, and a real-time web dashboard."
-tags: ["IoT", "Raspberry Pi", "Sensor Integration", "Automation", "Web Dashboard"]
+title: "IoT Smart Agriculture & Environmental Control"
+summary: "Raspberry Pi-based agriculture prototype combining environmental sensing, automated irrigation and ventilation, and a real-time web dashboard."
+tags: ["Raspberry Pi", "IoT", "Sensors", "Automation", "Web Dashboard"]
 image: "/images/projects/p8.png"
 ---
 
 ## Overview
 
-This project was developed at the Beijing Institute of Technology as a scale prototype of an IoT-enabled precision-agriculture system. The objective was to demonstrate how continuous environmental sensing, edge computing, automated actuation, and web-based monitoring can be integrated into a single platform to support data-driven agricultural management.
+Built a Raspberry Pi-based smart-agriculture prototype at Beijing Institute of Technology that monitored environmental conditions, controlled irrigation and ventilation automatically, and exposed live sensor data through a web dashboard.
 
-## System Architecture
+## System
 
-A Raspberry Pi served as the central computing and coordination unit. Multiple environmental sensors were integrated around the scale agricultural environment to continuously collect information describing current growing conditions, with readings aggregated by the Raspberry Pi and used as inputs to the system's monitoring and automation logic.
+A Raspberry Pi acted as the central controller, collecting data from distributed environmental sensors and applying automation logic to physical actuators.
 
-Rather than functioning only as a passive monitoring station, the platform incorporated multiple actuators capable of responding to changing environmental conditions. Based on the sensed state of the agricultural environment, the system could activate the appropriate physical response when intervention was required — for example, triggering irrigation when additional water was needed, or activating ventilation when airflow was required.
+The control loop followed a simple architecture: Sense → Process → Decide → Actuate → Monitor.
 
-## Closed-Loop Automation
+When environmental conditions crossed the configured thresholds, the platform could trigger physical responses such as irrigation or ventilation.
 
-This created a closed-loop IoT architecture in which the physical environment was continuously observed, environmental data was processed by the computing platform, and actuator commands were generated according to the needs detected by the system: sense, process, decide, actuate, and monitor.
+## Web Interface
 
-A user-facing website was also developed as part of the platform, providing real-time visibility into the environmental information collected by the sensor network and allowing the user to remotely observe current agricultural conditions from a centralized dashboard. This connected the physical agricultural prototype with a digital monitoring layer, demonstrating how IoT systems can make distributed sensor information accessible to end users.
+A browser-based dashboard displayed live environmental data and provided a single view of the physical system.
 
-## Results
+## Result
 
-The complete project combined embedded/edge computing, environmental sensing, actuator control, IoT communication, automation logic, and web development into a single cyber-physical system. The scale prototype served as a proof of concept for how similar architectures could be expanded to monitor and automate larger agricultural environments, providing practical experience connecting hardware devices to a Raspberry Pi, processing live sensor data, controlling actuators from environmental conditions, and exposing physical-system data through a real-time web application.
+The project connected sensing, edge computing, actuator control, automation, and web monitoring into one working cyber-physical prototype.

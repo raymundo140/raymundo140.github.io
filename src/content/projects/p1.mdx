@@ -1,28 +1,34 @@
 ---
-title: "p1 - Autonomous Robotic Arm"
-summary: "6-DOF robotic arm with computer vision for pick-and-place tasks using ROS2 and OpenCV."
-tags: ["ROS2", "OpenCV", "Python", "C++"]
-image: "/images/projects/arm.jpg"
-repoUrl: "https://github.com/raymundo140/autonomous-arm"
-date: "2024-01"
+title: "A ROS 2 Architecture for Autonomous Mapping — CALL-M Mobile Manipulator"
+summary: "Modular ROS 2 autonomous-mapping architecture for the CALL-M mobile manipulator at AIST, integrating multimodal perception, static–dynamic obstacle filtering, SLAM, frontier-based exploration, and Nav2 navigation for unknown, dynamic indoor environments."
+tags: ["ROS2", "SLAM", "Nav2", "Frontier Exploration", "LiDAR", "Mobile Manipulation"]
+image: "/images/projects/p1.png"
+repoUrl: "https://github.com/raymundo140/call-m"
+pdfUrl: "/papers/projects/p1.pdf"
 ---
 
 ## Overview
 
-{/* Write your project overview here */}
+This project develops a complete autonomous-mapping software architecture for the CALL-M mobile manipulator at the CNRS-AIST Joint Robotics Laboratory (JRL), AIST, in Tsukuba, Japan. The objective was to transform established ROS 2 perception, SLAM, and navigation components into a supervised system capable of autonomously exploring and mapping unknown indoor environments while remaining robust to navigation failures and moving obstacles.
 
-## Motivation
+## System Architecture
 
-{/* Why did you build this? What problem does it solve? */}
+The architecture integrates five principal processing components: multimodal scan fusion, static–dynamic obstacle filtering, SLAM-based map construction, frontier-based exploration, and Nav2-based navigation. Sensor observations from two RPLIDAR A1M8 scanners, two ZED Mini stereo cameras, and an Intel RealSense D435i are reduced to a unified planar LaserScan representation. SLAM Toolbox constructs the occupancy-grid map, while Nav2 executes autonomous navigation using the TriOrb omnidirectional mobile base. The physical system distributes computation across an NVIDIA Jetson Orin Nano, an Intel NUC, and an operator computer connected through a common ROS 2 network.
 
-## How I Built It
+## Exploration-Management Framework
 
-{/* Step by step explanation, diagrams, code snippets */}
+A central contribution is a reusable exploration-management framework that extends conventional frontier exploration beyond simply selecting the next destination. Frontier cells are extracted and clustered into candidate exploration regions, which are evaluated using frontier size, distance, directional continuity, and recent-goal history. The framework supervises the full lifecycle of each Nav2 goal and incorporates navigation timeouts, spatial failure memory, temporary exclusions, retry behavior, progress assessment, and mission-completion logic. An event-driven supervisory gate prevents competing goal selections from asynchronous ROS 2 callbacks, while mission states including WAITING, RUNNING, PAUSED, and STOPPED provide explicit control over autonomous operation.
+
+## Static–Dynamic Obstacle Filtering
+
+A second major component is a static–dynamic obstacle-filtering framework operating directly on LaserScan data. The framework separates persistent environmental structure from moving observations before those observations reach the mapping subsystem. It maintains short-term spatial evidence of free and occupied regions, performs per-beam classification, and uses object-level clustering and tracking to interpret moving obstacles. Static observations are supplied to SLAM for persistent map construction, while dynamic observations remain available to the navigation system for real-time collision avoidance — preventing transient objects such as pedestrians from leaving persistent artifacts in the occupancy map without removing them from the robot's immediate obstacle representation.
 
 ## Results
 
-{/* Outcomes, metrics, demos */}
+The complete architecture was evaluated in a 24 m × 24 m simulated warehouse containing shelving, workbenches, crates, overhead structures, and four continuously moving pedestrian actors. Across ten autonomous exploration trials, the supervised system completed 10/10 missions compared with 7/10 for a conventional nearest-frontier baseline. It achieved 95.3 ± 2.4% coverage of reachable space and reduced the average number of issued navigation goals from 161.9 to 56.1, while increasing average progress per goal from 1.21 m to 3.86 m. Frontier evaluations decreased from 174.3 to 67.6 per mission.
 
-## What I Learned
+The architecture was also transferred to the physical CALL-M robot and evaluated over five autonomous mapping sessions in a dynamic indoor environment with personnel moving through the workspace. All 5/5 hardware sessions reached autonomous completion. The resulting maps reproduced a measured 4.90 m room dimension as 4.85 ± 0.05 m and a 6.80 m dimension as 7.13 ± 0.07 m, demonstrating repeatable autonomous operation under distributed real-time execution.
 
-{/* Key takeaways */}
+## Publications
+
+This work produced two focused research-paper efforts. The first paper, *"A Supervised ROS 2 Architecture for Autonomous Mapping: Modular Exploration-Management Framework"* (Roberto Raymundo Gomez Vargas, Rafael Cisneros-Limon), isolates the supervised autonomous-mapping architecture and reusable exploration-management framework and has been submitted to IEEE. The second paper focuses on the static–dynamic obstacle-filtering framework and is currently in preparation. The attached PDF is the earlier combined manuscript, retained as comprehensive project documentation since it describes both contributions within the complete system.

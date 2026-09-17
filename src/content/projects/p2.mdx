@@ -1,28 +1,35 @@
 ---
-title: "p2 - Autonomous Robotic Arm"
-summary: "6-DOF robotic arm with computer vision for pick-and-place tasks using ROS2 and OpenCV."
-tags: ["ROS2", "OpenCV", "Python", "C++"]
-image: "/images/projects/arm.jpg"
-repoUrl: "https://github.com/raymundo140/autonomous-arm"
-date: "2024-01"
+title: "Semi-Autonomous Door Opening with a Mobile Manipulator"
+summary: "Integrated perception, navigation, and manipulation pipeline that lets the CALL-M mobile manipulator autonomously detect and approach a door, localize its handle in 3D, align its base, and open the door. Second-author IEEE submission, 80% end-to-end success over 20 physical-robot trials."
+tags: ["ROS2", "Mobile Manipulation", "YOLO", "RGB-D Perception", "MoveIt", "Nav2"]
+image: "/images/projects/p2.png"
+pdfUrl: "/papers/projects/p2.pdf"
 ---
 
 ## Overview
 
-{/* Write your project overview here */}
+This research project develops an integrated perception–navigation–manipulation pipeline for semi-autonomous door opening using the CALL-M mobile manipulator at the CNRS-AIST Joint Robotics Laboratory (JRL), AIST, in Tsukuba, Japan. I am the second author of the resulting IEEE paper. The project addresses a system-level mobile-manipulation problem: coordinating perception, autonomous navigation, 3D localization, mobile-base positioning, motion planning, grasping, and physical interaction so that a robot can traverse a common barrier in human indoor environments.
 
-## Motivation
+## Hardware and System
 
-{/* Why did you build this? What problem does it solve? */}
+The system is implemented in ROS 2 on CALL-M, which combines a TriOrb omnidirectional mobile base, a Universal Robots UR7e six-degree-of-freedom collaborative manipulator, and a Robotiq 2F-85 parallel gripper. Two RPLIDAR A1M8 scanners support navigation and obstacle detection, while an Intel RealSense D435i RGB-D camera provides color, depth, and point-cloud information for handle perception. Computation is distributed between an NVIDIA Jetson Orin Nano for sensor processing and perception and an Intel NUC for navigation and manipulation control.
 
-## How I Built It
+## Pipeline
 
-{/* Step by step explanation, diagrams, code snippets */}
+After the operator manually initializes the robot pose in RViz, the remainder of the pipeline executes automatically through seven stages: Door Search, Approach, Handle Detection, 3D Estimation, Fine Alignment, Pre-grasp, and Contact/Grasp followed by handle actuation and door opening.
+
+During Door Search, the mobile base rotates while the perception system searches for the target door using a YOLO detector trained on 4,656 images (3,000 from the DeepDoors2 dataset and 1,656 collected locally). After detection, the robot autonomously approaches the door using the ROS 2 navigation framework and stops at approximately 0.80 m to preserve space for subsequent alignment and manipulation.
+
+The pipeline then detects the door handle in the RGB image and obtains its 2D image coordinates. RGB-D depth and point-cloud data are used to estimate the handle position in 3D, and ROS 2 transforms convert this position between camera, manipulator, mobile-base, and map reference frames. Fine corrective motions of the omnidirectional base place the handle inside the manipulator workspace and align the robot with the target.
+
+For manipulation, the UR7e is moved to a pre-grasp configuration using the estimated handle pose. The gripper advances along a predefined approach direction, closes around the lever handle, moves downward to actuate the latch, and then pulls the handle toward the robot to rotate and open the door. The physical interaction currently follows a predefined Cartesian sequence without online pose correction, identified experimentally as the principal limitation of the system.
 
 ## Results
 
-{/* Outcomes, metrics, demos */}
+The complete pipeline was evaluated in 20 trials on the physical CALL-M robot. Ten nominal trials used an initial robot-to-door distance of 0.35 m and an initial end-effector height of 0.44 m. Under these conditions, Door Search, Approach, Handle Detection, 3D Estimation, Fine Alignment, and Pre-grasp each achieved 10/10 successful executions (100%), while Contact/Grasp and overall door-opening success reached 8/10 (80%).
 
-## What I Learned
+Five additional experiments varied the initial robot-to-door distance from 2.15 m to 10.10 m; the system successfully completed the full task from 2.15, 3.50, 5.90, and 7.90 m, with the 10.10 m trial failing during approach due to localization drift at the boundary of the global costmap. A final five trials varied initial end-effector height between 0.34 and 0.68 m; perception and approach remained successful across these conditions, but the complete task succeeded only at the nominal 0.44 m configuration.
 
-{/* Key takeaways */}
+## Key Findings
+
+The stage-level evaluation provides more diagnostic information than a single binary door-opening metric: it demonstrates that the integrated perception and navigation pipeline is robust under the tested conditions while identifying physical manipulation as the primary target for future improvement. Residual misalignment, force-limit activation, grasp depth, and insufficient latch displacement affected end-to-end success despite reliable upstream perception and localization. Proposed extensions include closed-loop pose correction, adaptive grasp planning, and force-aware manipulation to improve robustness across a wider range of door and handle configurations.

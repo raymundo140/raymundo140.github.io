@@ -26,6 +26,7 @@ const projects = defineCollection({
     image: z.string(),
     repoUrl: z.string().optional(),
     demoUrl: z.string().optional(),
+    pdfUrl: z.string().optional(),
     date: z.string().optional(),
   }),
 });

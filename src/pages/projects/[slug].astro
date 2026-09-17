@@ -19,7 +19,7 @@ if (!entry) {
 }
 
 const { Content } = await render(entry)   // ← was entry.render()
-const { title, tags, image, repoUrl, demoUrl, summary } = entry.data
+const { title, tags, image, repoUrl, demoUrl, pdfUrl, summary } = entry.data
 ---
 
 <Layout>
@@ -50,11 +50,19 @@ const { title, tags, image, repoUrl, demoUrl, summary } = entry.data
             Live Demo →
           </a>
         )}
+        {pdfUrl && (
+          <a href={pdfUrl} target='_blank' rel='noopener noreferrer' class='btn btn-sm btn-outline gap-2'>
+            <svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'>
+              <path stroke-linecap='round' stroke-linejoin='round' d='M9 12h6m-6 4h6m-7 5h8a2 2 0 0 0 2-2V7.83a2 2 0 0 0-.59-1.42l-4.82-4.82A2 2 0 0 0 12.17 1H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2Z' />
+            </svg>
+            View Documentation
+          </a>
+        )}
       </div>
     </div>
 
     <!-- Hero image -->
-    <div class='rounded-2xl overflow-hidden border border-base-300 aspect-video bg-base-300 flex items-center justify-center relative mb-10'>      <img
+    <div class='rounded-2xl overflow-hidden border border-base-300 aspect-video bg-base-300 flex items-center justify-center relative mb-10 max-h-[320px] mx-auto'>      <img
         src={image}
         alt={title}
         class='absolute inset-0 w-full h-full object-cover'
@@ -62,6 +70,13 @@ const { title, tags, image, repoUrl, demoUrl, summary } = entry.data
       />
       <span class='text-7xl opacity-20 select-none'>🤖</span>
     </div>
+
+    <!-- Inline PDF viewer -->
+    {pdfUrl && (
+      <div class='w-full h-[500px] border border-base-300 rounded-2xl overflow-hidden mb-10'>
+        <iframe src={pdfUrl} class='w-full h-full' title={`${title} report`} />
+      </div>
+    )}
 
     <!-- MDX Content -->
     <div class='prose prose-lg max-w-none'>

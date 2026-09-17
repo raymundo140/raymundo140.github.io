@@ -1,28 +1,41 @@
 ---
-title: "p3 - Autonomous Robotic Arm"
-summary: "6-DOF robotic arm with computer vision for pick-and-place tasks using ROS2 and OpenCV."
-tags: ["ROS2", "OpenCV", "Python", "C++"]
-image: "/images/projects/arm.jpg"
-repoUrl: "https://github.com/raymundo140/autonomous-arm"
-date: "2024-01"
+title: "AI Autonomous Mobile Robot — Manchester Robotics"
+summary: "A 1:10-scale autonomous differential-drive robot built with Manchester Robotics, combining ROS 2, Jetson Nano edge computing, PID line following, traffic-light perception, and YOLOv8 traffic-sign detection into a real-time driving pipeline. Achieved a 98% track-completion rate and 92.3% mAP@0.5 sign detection."
+tags: ["ROS2", "YOLOv8", "Jetson Nano", "OpenCV", "PID Control", "Python"]
+image: "/images/projects/p3.png"
+demoUrl: "https://www.youtube.com/watch?v=oAJTYfWy3Z4"
+pdfUrl: "/papers/projects/p3.pdf"
 ---
 
 ## Overview
 
-{/* Write your project overview here */}
+This ten-week project developed a 1:10-scale autonomous differential-drive robot in collaboration with Manchester Robotics for the Intelligent Robotic Implementation course at Tecnológico de Monterrey. The objective was to reproduce the core elements of an autonomous-driving stack — perception, closed-loop control, decision making, embedded computing, and wireless communication — on a low-cost indoor robotic platform.
 
-## Motivation
+## Hardware and Software Stack
 
-{/* Why did you build this? What problem does it solve? */}
+The robot used a Jetson Nano as its edge-computing platform together with a Manchester Robotics HackerBoard motor driver, encoder-equipped DC motors, and a Raspberry Pi V2 camera. The software stack was built around ROS 2 Humble, Python, OpenCV, and micro-ROS. Development progressed from basic motion and PID control to waypoint navigation, computer-vision-based line following, traffic-light recognition, AI traffic-sign detection, and integrated autonomous behavior.
 
-## How I Built It
+The system used a distributed architecture between the Jetson Nano and a laptop. The Jetson captured 320×240 camera frames and published compressed images at 30 Hz while receiving drive commands for motor actuation. The laptop performed higher-level perception and decision making, including traffic-sign recognition, traffic-light interpretation, line following, and state-machine logic, before publishing final velocity commands back to the robot.
 
-{/* Step by step explanation, diagrams, code snippets */}
+## Perception Pipeline
+
+Line following used grayscale thresholding, a lower-image region of interest, morphological filtering, contour extraction, and centroid-based lateral-error estimation. A PID controller converted normalized line offset into yaw correction, while throttle was adjusted according to vehicle alignment. Testing reported a 98% track-completion rate over 30 laps with a mean heading error of 4.2 degrees.
+
+Traffic-light perception combined Gaussian smoothing, HSV conversion, CLAHE contrast enhancement, HSV thresholding, morphological cleaning, contour filtering, circularity checks, and intensity filtering to identify red, yellow, and green lights, reaching a 95.1% classification F1-score.
+
+For traffic-sign perception, a YOLOv8 model was trained on 1,200 annotated images across four traffic-sign classes. Data was labeled and exported with Roboflow, and training used CUDA acceleration in Google Colab with transfer learning, up to 200 epochs, early stopping, 640-pixel input resolution, batch size 16, SGD optimization, and augmentation. Validation reached 92.3% mAP@0.5 with class-wise precision above 90%, and the project reports 22 ms TensorRT inference.
+
+## Autonomous Behavior
+
+Autonomous behavior was coordinated through finite-state-machine logic combining line following, traffic-light states, and detected traffic signs. States governed normal line following, waiting at red lights, slowing for yellow lights, executing sign-specific maneuvers, and stopping, allowing multiple perception outputs to influence motion through deterministic transitions.
+
+Earlier development stages also implemented waypoint navigation with closed-loop yaw control and a cubic-spline velocity profile, reporting 2.8 cm RMS positional error at 0.25 m/s.
 
 ## Results
 
-{/* Outcomes, metrics, demos */}
+- Waypoint navigation: 2.8 cm RMS positional error at 0.25 m/s
+- Line following: 98% track-completion rate over 30 laps, 4.2° mean heading error
+- Traffic-light classification: 95.1% F1-score
+- Traffic-sign detection: 92.3% mAP@0.5, class-wise precision above 90%, 22 ms TensorRT inference
 
-## What I Learned
-
-{/* Key takeaways */}
+The project also required practical hardware and systems debugging: Jetson flashing problems were resolved through changes to the programming setup, power failures led to an upgraded 20,000 mAh QC 3.0 power source, wheel imbalance required PID retuning, image latency was reduced through compressed 320×240 MJPEG transport, and lighting/glare issues required perception and test-environment adjustments. The final prototype demonstrated an integrated edge-AI robotics system combining embedded hardware, ROS 2 communication, classical computer vision, deep-learning perception, feedback control, and state-based decision making on a physical autonomous vehicle.

@@ -1,0 +1,33 @@
+---
+title: "Autonomous Face-Tracking Drone with Real-Time Computer Vision"
+summary: "Autonomous face-tracking system for a DJI Tello UAV using Python, OpenCV, and face_recognition, reactively controlling yaw, altitude, and forward/backward motion to keep a registered target centered, with multithreaded video acquisition and safety-constrained fail-safe hovering."
+tags: ["Python", "OpenCV", "Computer Vision", "UAV", "Multithreading", "Reactive Control"]
+image: "/images/projects/p6.png"
+pdfUrl: "/papers/projects/p6.pdf"
+---
+
+## Overview
+
+This individual project was developed for the TE3002B Implementation of Intelligent Robotics course at Tecnológico de Monterrey in 2025. The objective was to create an autonomous visual-tracking system that allowed a DJI Tello quadcopter to recognize and follow a specific person using its onboard camera and real-time computer vision.
+
+## Perception Pipeline
+
+The system was implemented in Python 3.10 and controlled the DJI Tello from an external computer via djitellopy. A reference image of the target face was loaded at startup and encoded using the face_recognition library. During flight, frames from the Tello camera were analyzed and detected faces were compared against this stored facial encoding to determine whether the intended target was visible.
+
+To reduce computational load, face recognition was performed every 10 frames. Frames used for recognition were resized to 25% of their original dimensions and converted from BGR to RGB before face detection and encoding, with detected face coordinates scaled back to the original frame dimensions for control and visualization.
+
+## Reactive Control
+
+Once the registered face was identified, the system calculated the center of the face relative to the center of the camera frame. Horizontal image error was converted into a yaw command, allowing the drone to rotate left or right to keep the target centered. Vertical image error was converted into an up/down command so the drone could adjust its altitude as the face moved vertically in the frame.
+
+Forward and backward tracking was implemented using the apparent width of the detected face as a visual proxy for distance. A desired face width of approximately 170 pixels was defined, with a tolerance band of 15 pixels — if the face appeared smaller, the drone moved forward; if larger, it moved backward; within tolerance, no correction was applied. Control commands were constrained to reduce abrupt motion (yaw ±30, vertical ±20, forward/backward ±20), and a safety condition prevented additional upward movement whenever the Tello reported an altitude of 190 cm or greater.
+
+A fail-safe tracking behavior was implemented for loss of visual contact: if the registered face was not detected, the drone received a zero-velocity RC command and entered a hover state rather than continuing its previous movement.
+
+## Real-Time Architecture
+
+Real-time video handling was improved using Python multithreading. A dedicated background thread continuously retrieved the newest camera frame from the Tello while the main thread handled face recognition, control calculations, visualization, and flight commands, with a threading lock protecting access to the shared latest-frame variable. This architecture reduced the impact of video latency on the control loop and improved system responsiveness. The visual debugging interface, built with OpenCV, displayed bounding boxes, labels, and the measured face width in pixels.
+
+## Results
+
+The final system successfully demonstrated autonomous reaction to the position of the registered face, maintaining the target near the center of the frame while adjusting altitude and distance in real time. The project demonstrated a complete perception-to-action loop on a physical UAV: camera frames were acquired from the robot, processed to identify and localize a target, transformed into control errors, and converted into motion commands that changed the robot's position relative to the target. The report notes that multithreading noticeably improved system performance and produced smoother processing and drone response.

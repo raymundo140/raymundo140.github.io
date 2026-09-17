@@ -1,28 +1,34 @@
 ---
-title: "p5 - Autonomous Robotic Arm"
-summary: "6-DOF robotic arm with computer vision for pick-and-place tasks using ROS2 and OpenCV."
-tags: ["ROS2", "OpenCV", "Python", "C++"]
-image: "/images/projects/arm.jpg"
-repoUrl: "https://github.com/raymundo140/autonomous-arm"
-date: "2024-01"
+title: "Autonomous Waypoint Navigation Tractor — John Deere"
+summary: "Scale autonomous tractor built for a John Deere waypoint-estimation challenge using a dual-core STM32H755, combining state-machine navigation, PWM motor/steering control, and CAN/SPI/I2C/UART/nRF24 communication with IMU and encoder feedback."
+tags: ["STM32", "Embedded C/C++", "CAN Bus", "State Machines", "PWM", "IMU"]
+image: "/images/projects/p5.png"
+repoUrl: "https://github.com/HumbertoBM2/WaypointEstimation"
+pdfUrl: "/papers/projects/p5.pdf"
 ---
 
 ## Overview
 
-{/* Write your project overview here */}
+This project was developed for the TE2004B Design of Advanced Embedded Systems course at Tecnológico de Monterrey as a team solution to a "Waypoint Estimation" challenge proposed by John Deere. The objective was to design and build an autonomous scale tractor capable of following a predefined sequence of waypoints while integrating embedded control, sensing, communication protocols, and real-time task handling.
 
-## Motivation
+## Platform
 
-{/* Why did you build this? What problem does it solve? */}
+The robotic platform was built around an STM32H755 dual-core microcontroller, supported by an Arduino Nano and multiple communication and sensing peripherals. The system incorporated a DC traction motor with encoder feedback, a steering servo, an ESC module, an MPU6050 IMU, nRF24 wireless modules, CAN communication hardware, and a John Deere LPS camera. The resulting prototype combined actuation, sensing, embedded computation, and external position information into a single autonomous mobile system.
 
-## How I Built It
+The embedded software was developed primarily using STM32CubeIDE, STM32 HAL libraries, C, and C++, with Arduino and Python also used within the broader system workflow. Firmware development emphasized non-blocking execution and modular task handling using a system-tick-based timing mechanism rather than CPU-blocking delays.
 
-{/* Step by step explanation, diagrams, code snippets */}
+## Navigation Architecture
+
+A route-navigation finite-state machine was implemented to control the tractor through the required trajectory: an initial waypoint phase, curve-entry phase, curve-completion phase, and final straight segment. Each state commanded the DC traction motor and steering servo through PWM signals. A separate waypoint notification/update state machine handled transitions when the platform reached a waypoint and prepared the system for the next navigation target.
+
+The STM32H755 dual-core architecture was used to distribute functionality between its Cortex-M7 and Cortex-M4 cores, with waypoint-indication functionality running on the M4 while other system tasks were handled by the M7.
+
+## Communication and Integration
+
+The platform incorporated several embedded communication protocols: CAN (via an MCP2515 controller and TJA1051 transceiver) for communication between core system elements and peripheral devices, SPI and I2C for peripheral and sensor communication, UART for real-time communication and debugging, and nRF24 wireless modules for an additional wireless channel. The team performed subsystem-level testing before full integration, including CAN communication between microcontrollers, CAN interaction with a Toyota instrument cluster, ESC control, UART signal verification, IMU/nRF/servo integration, and encoder communication over CAN.
 
 ## Results
 
-{/* Outcomes, metrics, demos */}
+The final waypoint-navigation demonstration used a predefined trajectory containing four coordinate targets: (0, 120), (86, 143), (86, 0), and (0, 0). System development followed an incremental integration methodology, with individual peripherals and communication links validated independently before combining them into the final mobile platform.
 
-## What I Learned
-
-{/* Key takeaways */}
+My contribution focused particularly on hardware integration and embedded communication: assembling the tractor and configuring peripherals including the nRF24 wireless modules and servo motors, implementing PWM and SPI communication, using STM32 HAL for peripheral configuration, and collaborating on subsystem integration across the complete robotic platform.

@@ -1,0 +1,35 @@
+---
+title: "FPGA-Based Tractor Simulator with Unity and Custom Processor Integration"
+summary: "FPGA-controlled agricultural tractor simulator on a Terasic DE10-Lite board paired with Unity, using VHDL programmable logic, bidirectional serial communication, accelerometer-based steering, and Assembly processor routines to drive a real-time 3D simulation with live seven-segment telemetry."
+tags: ["FPGA", "VHDL", "Assembly", "Unity", "C#", "Serial Communication"]
+image: "/images/projects/p10.png"
+pdfUrl: "/papers/projects/p10.pdf"
+---
+
+## Overview
+
+This project was developed for the TE2002B Design of Systems-on-Chip course at Tecnológico de Monterrey. The team designed a tractor-control simulation that combined programmable digital hardware on a DE10-Lite FPGA with a real-time Unity environment. The objective was to use the FPGA board to implement and process tractor-control inputs while Unity served as the visual simulation environment, using simulation as a way to validate control concepts before physical implementation.
+
+## Simulation Design
+
+The simulation contained three playable levels. The tractor collected corn while avoiding rocks, with progression thresholds at 50, 100, and 150 collected objects. A 60-second time constraint and a three-life damage system were incorporated, alongside menu, pause, victory, defeat, and rock-collision states.
+
+A high-level state machine was designed to coordinate the simulation, with eight states: Menu, Level 1, Level 2, Level 3, Pause, Victory, Defeat, and Rock. State transitions depended on control inputs, collected-crop count, remaining time, and remaining lives.
+
+## FPGA Implementation
+
+FPGA functionality was developed using VHDL in Quartus Prime Lite Edition. The board initially used four switches and two push buttons as physical control inputs. Switch transitions generated command bytes for forward, reverse, left, and right motion, while the push buttons generated commands for acceleration/boost and braking, with both activation and deactivation events detected by comparing current and previous input states.
+
+Communication between the DE10-Lite and Unity was implemented through a serial connection using an FTDI interface. The FPGA transmitted command bytes to Unity, where C# code received and parsed the values and mapped them to tractor-control functions built on Unity physics and Rigidbody/WheelCollider behavior.
+
+## Bidirectional Telemetry
+
+The communication was bidirectional: Unity tracked the number of corn objects collected and transmitted the current counter value back to the FPGA as a byte. VHDL logic converted the received value to an integer, separated it into hundreds, tens, and units, and drove three seven-segment displays — providing real-time physical telemetry on the DE10-Lite while the simulation was running.
+
+## Processor Integration
+
+The final prototype expanded the hardware interface with the DE10-Lite's onboard accelerometer and processor-level functionality. Accelerometer data was used as a steering input, providing a more natural physical control mechanism than discrete switches. Processor-side routines were implemented in Assembly to evaluate physical controls and accelerometer values and generate the appropriate control command, with the FPGA/processor interface exchanging control data through custom ports and address-selection logic.
+
+## Results
+
+Testing was performed incrementally across both the FPGA and Unity sides, verifying switch-based movement, button-controlled acceleration, serial command transmission and reception, seven-segment display updates, corn-counter communication, accelerometer behavior, and final integrated operation. The final prototype demonstrated a complete hardware-software co-design workflow: physical FPGA inputs were interpreted by programmable logic and processor routines, transmitted to a 3D simulation, applied to a virtual tractor, and simulation telemetry was returned to the FPGA for physical display — reinforcing the benefits of FPGA reconfigurability, simulation-driven validation, and interdisciplinary hardware-software development.

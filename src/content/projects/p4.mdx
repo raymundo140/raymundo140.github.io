@@ -1,28 +1,39 @@
 ---
-title: "p4 - Autonomous Robotic Arm"
-summary: "6-DOF robotic arm with computer vision for pick-and-place tasks using ROS2 and OpenCV."
-tags: ["ROS2", "OpenCV", "Python", "C++"]
-image: "/images/projects/arm.jpg"
-repoUrl: "https://github.com/raymundo140/autonomous-arm"
-date: "2024-01"
+title: "AI-Enabled XARM6 Object Tracking with ROS 2 and 3D Deep Learning"
+summary: "Perception-to-action pipeline for an XARM6 manipulator built for a General Motors automotive-part handling challenge, combining a custom PointNet point-cloud classifier (96.4% test accuracy) with real-time ROS 2 visual servoing that tracked object motion up to 0.3 m/s."
+tags: ["ROS2", "PointNet", "Deep Learning", "Computer Vision", "RGB-D", "Visual Servoing"]
+image: "/images/projects/p4.png"
+repoUrl: "https://github.com/raymundo140/Deep-Learning-Driven-XARM-VI-Robotic-Arm-for-Automated-Automotive-Part-Handling"
+pdfUrl: "/papers/projects/p4.pdf"
 ---
 
 ## Overview
 
-{/* Write your project overview here */}
+This team project developed an AI-enabled robotic perception and control system for an XARM6 six-degree-of-freedom manipulator in the context of a General Motors automotive-part handling challenge at Tecnológico de Monterrey. The work combined ROS 2 Humble, an Azure Kinect DK RGB-D camera, 2D computer vision, 3D point-cloud processing, deep learning, simulation, and physical robotic-arm control to explore automated tracking and recognition of an automotive component.
 
-## Motivation
+The project focused on building the major components of a perception-to-action pipeline: acquiring 3D sensor data, generating and preprocessing a point-cloud dataset, training a PointNet-based object classifier, implementing real-time visual tracking, and translating perception outputs into robot joint commands. Gazebo and RViz were used for simulation and visualization before and alongside physical XARM6 testing.
 
-{/* Why did you build this? What problem does it solve? */}
+## 3D Deep Learning Pipeline
 
-## How I Built It
+RGB-D data from the Azure Kinect DK and high-quality STL meshes of the target automotive part were used to construct a custom point-cloud dataset. A Python pipeline sampled the geometry from multiple azimuth and elevation viewpoints, producing 600 PLY point-cloud files (550 training, 50 testing). Each point cloud was standardized to 1,024 points through subsampling or zero-padding, normalized to a unit sphere, and augmented through shuffling and jittering.
 
-{/* Step by step explanation, diagrams, code snippets */}
+A simplified PointNet architecture was implemented in TensorFlow/Keras, including a spatial transformer network (T-Net), shared multilayer perceptrons, global max pooling, fully connected layers with dropout, and a softmax output for binary object/non-object classification, with orthogonal regularization applied to the T-Net transformation matrix. The resulting model contained approximately 748,000 parameters.
+
+Training was performed in Google Colab using the Adam optimizer, a 0.001 learning rate, sparse categorical cross-entropy, and a batch size of 32, with early stopping terminating training at epoch 12. The final model reached 99.1% training accuracy and 96.4% test accuracy, and was wrapped in a ROS 2 inference node with sub-30 ms CPU inference.
+
+## Physical Visual Tracking
+
+For physical object tracking, a lightweight ROS 2 computer-vision node processed RGB images from the Azure Kinect DK. Images were converted to HSV and thresholded to isolate the predominantly black target part, morphological opening and closing removed noise, and the largest contour above a minimum area was selected. Image moments computed the object's pixel centroid, and horizontal/vertical dead zones (0.4–0.6) determined whether the target was left, centered, right, above, or below the desired image region.
+
+The controller incrementally modified XARM joint targets by 0.02 rad at a 10 Hz update rate — horizontal error primarily controlled Joint 1, vertical error controlled Joint 3, and Joint 2 was used when Joint 3 approached its mechanical limit. With a 640×480 camera stream, end-to-end visual-servoing latency stayed below 50 ms on an Intel Core i7 12th-gen laptop, and the robot successfully followed translational object motion up to 0.3 m/s without losing visual lock.
+
+A second physical interaction mode used MediaPipe hand tracking: the Azure Kinect detected 21 hand landmarks, and wrist position was mapped to robot commands after a one-time camera-to-robot calibration, demonstrating an intuitive human-to-robot guidance method using the same perception infrastructure.
 
 ## Results
 
-{/* Outcomes, metrics, demos */}
+- PointNet: 99.1% training accuracy, 96.4% test accuracy, sub-30 ms ROS 2 CPU inference
+- Physical tracking: sub-50 ms end-to-end visual-servoing latency, tracked object motion up to 0.3 m/s without losing lock
 
-## What I Learned
+## Important Note
 
-{/* Key takeaways */}
+Due to limited laboratory access during the final project week, the trained PointNet ROS 2 inference node was not fully connected to the physical XARM6 servo-control loop. The demonstrated closed-loop physical tracking used the 2D RGB segmentation/centroid pipeline, while the 3D PointNet classifier was independently trained, tested, and deployed as a standalone ROS 2 node — full integration of the two remains future work.

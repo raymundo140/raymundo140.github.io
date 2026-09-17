@@ -23,11 +23,11 @@ const exp = experiences.find(e => e.slug === slug)
 const { title, company, location, dateRange, tags, logo, companyUrl } = entry.data
 ---
 
-<Layout>
+<Layout title={`${title} | Experience`} description={`${title} at ${company} (${dateRange}) — ${location}.`}>
   <div class='max-w-4xl mx-auto py-12'>
 
-    <a href={base + '/'} class='btn btn-ghost btn-sm mb-8 -ml-2'>
-      ← Back to Home
+    <a href={base + '/experience'} class='btn btn-ghost btn-sm mb-8 -ml-2'>
+      ← Back to Experience
     </a>
 
     <!-- Header -->

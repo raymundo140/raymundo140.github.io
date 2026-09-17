@@ -22,7 +22,7 @@ const { Content } = await render(entry)   // ← was entry.render()
 const { title, tags, image, repoUrl, demoUrl, pdfUrl, summary } = entry.data
 ---
 
-<Layout>
+<Layout title={`${title} | Projects`} description={summary} image={image}>
   <div class='max-w-4xl mx-auto py-12'>
 
     <!-- Back -->

@@ -2,7 +2,7 @@
 title: "Robotics Research Intern"
 company: "AIST – National Institute of Advanced Industrial Science and Technology"
 location: "Tsukuba, Japan"
-dateRange: "Mar 2026 – Sep 2026"
+dateRange: "Jan 2026 – Sep 2026"
 tags: ["ROS2", "SLAM", "Nav2", "MoveIt2", "UR5e", "LiDAR", "Python", "Reinforcement Learning", "Mobile Manipulation", "Sensor Fusion", "Frontier Exploration", "Gazebo", "RViz", "Foxglove"]
 logo: "/images/experience/w1.png"
 companyUrl: "https://www.aist.go.jp/index_en.html"
@@ -10,19 +10,19 @@ companyUrl: "https://www.aist.go.jp/index_en.html"
 
 ## Overview
 
-At AIST (National Institute of Advanced Industrial Science and Technology) in Tsukuba, Japan, I work as a Robotics Research Intern focused on designing and implementing a fully autonomous warehouse restocking robot system. The project centers on CALL-M < a custom mobile manipulator robot built at AIST > and spans the full technical stack, from simulation infrastructure and sensor fusion through navigation, exploration, and high-level task coordination.
+At AIST (National Institute of Advanced Industrial Science and Technology) in Tsukuba, Japan, I worked as a Robotics Research Intern focused on designing and implementing a fully autonomous warehouse restocking robot system. The project centered on CALL-M < a custom mobile manipulator robot built at AIST > and spanned the full technical stack, from simulation infrastructure and sensor fusion through navigation, exploration, and high-level task coordination.
 
-The project integrates a rich sensor suite; dual RPLidar A1M8 units for 360° environment scanning, two ZED Mini stereo cameras and an Intel RealSense D435i mounted on a Universal Robots UR5e arm for depth perception and visual processing, and four ultrasonic sonar sensors for close-range proximity detection. The UR5e arm plays a dual role: it serves as the manipulation platform for grasping and placement tasks. And its full 6-DOF articulation is actively exploited during mapping, using efficient motion planning algorithms to sweep the Intel RealSense through carefully computed trajectories, capturing depth data from angles and heights the mobile base and fixed-mount camera could not achieve alone. This allows CALL-M to map occluded spaces, the tops and interiors of shelving units, and narrow areas inaccessible to the base, producing a significantly richer and more geometrically complete 3D map than what a fixed-mount sensor configuration would yield. All sensor streams are fused into a unified perception pipeline that applies reinforcement learning for autonomous exploration, deep learning for grasp pose estimation, computer vision for object and shelf detection, QR-based semantic identification, and full motion planning with MoveIt 2. Running across an Intel NUC and an NVIDIA Jetson in a distributed ROS 2 architecture.
+The project integrated a rich sensor suite; dual RPLidar A1M8 units for 360° environment scanning, two ZED Mini stereo cameras and an Intel RealSense D435i mounted on a Universal Robots UR5e arm for depth perception and visual processing, and four ultrasonic sonar sensors for close-range proximity detection. The UR5e arm played a dual role: it served as the manipulation platform for grasping and placement tasks. And its full 6-DOF articulation was actively exploited during mapping, using efficient motion planning algorithms to sweep the Intel RealSense through carefully computed trajectories, capturing depth data from angles and heights the mobile base and fixed-mount camera could not achieve alone. This allowed CALL-M to map occluded spaces, the tops and interiors of shelving units, and narrow areas inaccessible to the base, producing a significantly richer and more geometrically complete 3D map than what a fixed-mount sensor configuration would yield. All sensor streams were fused into a unified perception pipeline that applied reinforcement learning for autonomous exploration, deep learning for grasp pose estimation, computer vision for object and shelf detection, QR-based semantic identification, and full motion planning with MoveIt 2, running across an Intel NUC and an NVIDIA Jetson in a distributed ROS 2 architecture.
 
-In parallel, I collaborate as co-author on a research paper tackling one of the classic open problems in mobile manipulation autonomous door opening. The work involves detecting and localizing door handles using RGB-D perception, computing precise approach and grasp strategies under real-world uncertainty, and coordinating the UR5e arm and the omnidirectional base in a tightly coupled motion sequence to actuate the handle and push the door open.
+In parallel, I collaborated as co-author on a research paper tackling one of the classic open problems in mobile manipulation: autonomous door opening. The work involved detecting and localizing door handles using RGB-D perception, computing precise approach and grasp strategies under real-world uncertainty, and coordinating the UR5e arm and the omnidirectional base in a tightly coupled motion sequence to actuate the handle and push the door open.
 
-This internship has been an intense and rewarding learning experience. Working across the full robotics stack challenged me to grow technically in areas ranging from low-level sensor integration and ROS 2 architecture to machine learning and manipulation planning, while also developing my ability to manage complex, long-horizon engineering projects independently.
+This internship was an intense and rewarding learning experience. Working across the full robotics stack challenged me to grow technically in areas ranging from low-level sensor integration and ROS 2 architecture to machine learning and manipulation planning, while also developing my ability to manage complex, long-horizon engineering projects independently.
 
 ---
 
 ## The Robot: CALL-M
 
-CALL-M is a research-grade mobile manipulator I work with daily. Understanding its hardware deeply was essential to designing a robust software architecture around its capabilities and constraints.
+CALL-M is a research-grade mobile manipulator I worked with daily. Understanding its hardware deeply was essential to designing a robust software architecture around its capabilities and constraints.
 
 ### Hardware Architecture
 
@@ -198,7 +198,7 @@ The costmap setup ensures that static obstacles (walls, shelving) influence both
 
 The exploration manager is the primary research contribution of Phase 1 and the component I am investing the most effort into. Its job is to make autonomous decisions about where the robot should go next in order to map the environment as efficiently as possible.
 
-My approach follows a deliberate two-stage research methodology: first, I built a classical heuristic baseline to get the full pipeline working end-to-end and generate reference data; then, I am replacing the heuristic decision-maker with a reinforcement learning policy trained against that baseline. This structure is intentional — a working baseline is a prerequisite for meaningful RL training, and the performance gap between the two approaches is itself a measurable research result.
+My approach followed a deliberate two-stage research methodology: first, I built a classical heuristic baseline to get the full pipeline working end-to-end and generate reference data; then, I worked on replacing the heuristic decision-maker with a reinforcement learning policy trained against that baseline. This structure was intentional — a working baseline is a prerequisite for meaningful RL training, and the performance gap between the two approaches is itself a measurable research result.
 
 #### Stage 1 — Classical Baseline: FFD + Information Gain Scoring
 
@@ -218,18 +218,18 @@ The baseline is fully functional and serves two purposes: it validates the compl
 
 #### Stage 2 — Research Contribution: Reinforcement Learning Exploration Policy
 
-The central research question I am investigating is whether a learned exploration policy can outperform the classical heuristic in terms of mapping efficiency — specifically: *does the robot cover more area per unit of travel distance when exploration decisions are made by a trained policy rather than a hand-crafted scoring function?*
+The central research question I investigated was whether a learned exploration policy can outperform the classical heuristic in terms of mapping efficiency — specifically: *does the robot cover more area per unit of travel distance when exploration decisions are made by a trained policy rather than a hand-crafted scoring function?*
 
-I am framing this as a Markov Decision Process (MDP):
+I framed this as a Markov Decision Process (MDP):
 
 - **State**: a local occupancy grid patch centered on the robot, current frontier set with positions and sizes, robot velocity, and elapsed mission time
 - **Action**: selection of the next frontier goal from the detected candidate set
 - **Reward**: positive reward proportional to new cells mapped since the last decision, negative reward proportional to distance traveled, penalty for blacklisted goals and stuck states
 - **Episode**: one complete exploration run from an empty map to full coverage or timeout
 
-The policy is trained entirely in simulation using the Gazebo environment I built for Phase 1, which allows thousands of training episodes to be run without real hardware time. The trained policy is then deployed as a drop-in replacement for the heuristic scorer inside the exploration manager node — the rest of the pipeline (Nav2, SLAM Toolbox, sensor fusion) remains identical, making the comparison between baseline and RL policy clean and controlled.
+The policy was trained entirely in simulation using the Gazebo environment I built for Phase 1, which allowed thousands of training episodes to be run without real hardware time. The trained policy was deployed as a drop-in replacement for the heuristic scorer inside the exploration manager node — the rest of the pipeline (Nav2, SLAM Toolbox, sensor fusion) remained identical, making the comparison between baseline and RL policy clean and controlled.
 
-The RL integration is designed so that the node can switch between the heuristic baseline and the learned policy at launch time via a single parameter, enabling direct A/B comparison in the same environment.
+The RL integration was designed so that the node could switch between the heuristic baseline and the learned policy at launch time via a single parameter, enabling direct A/B comparison in the same environment.
 
 #### ZED Servo Integration (Novel Contribution)
 
@@ -239,11 +239,11 @@ Regardless of which exploration policy is active, when a frontier is selected I 
 tilt_rad = atan2(camera_height, distance)
 ```
 
-This pre-positions the depth cameras to maximize coverage of the area the robot is about to enter — capturing obstacle data ahead of arrival rather than only after. This is a hardware-specific contribution enabled by CALL-M's servo-mounted cameras that has no equivalent on robots with fixed sensor placement. I plan to investigate whether incorporating the expected depth coverage gain from this servo tilt into the RL reward signal further improves the learned policy's efficiency.
+This pre-positioned the depth cameras to maximize coverage of the area the robot was about to enter — capturing obstacle data ahead of arrival rather than only after. This was a hardware-specific contribution enabled by CALL-M's servo-mounted cameras that has no equivalent on robots with fixed sensor placement.
 
 #### Blacklisting and Recovery
 
-Frontiers that Nav2 cannot reach or that time out after 120 seconds are blacklisted for 60 seconds, preventing the robot from repeatedly attempting unreachable goals. This applies to both the heuristic and RL policies. If all frontiers are blacklisted the system enters STUCK status and waits for the map to update with new candidates.
+Frontiers that Nav2 could not reach or that timed out after 120 seconds were blacklisted for 60 seconds, preventing the robot from repeatedly attempting unreachable goals. This applied to both the heuristic and RL policies. If all frontiers were blacklisted the system entered STUCK status and waited for the map to update with new candidates.
 
 #### Visualization
 
@@ -278,7 +278,7 @@ I built two complementary monitoring systems:
 
 ## Phase 2: Autonomous Restocking Pipeline
 
-*(In development — architecture designed, implementation ongoing)*
+*(Architecture designed during the internship; implementation was in progress at the time my internship concluded.)*
 
 Phase 2 uses the map produced by Phase 1, enriched with semantic annotations marking supply zones, shelf locations, and return areas.
 
@@ -302,22 +302,22 @@ The system handles four failure modes:
 | Product detection failure | Retry with adjusted lighting compensation; flag for manual review |
 | Grasp failure | Re-plan grasp pose with updated depth data; retry ×2 before aborting |
 
-I am evaluating Vision-Language Models (VLMs) as a fallback layer for cases where structured detection fails — using the VLM's semantic understanding to interpret ambiguous scenes and suggest the next action.
+I evaluated Vision-Language Models (VLMs) as a potential fallback layer for cases where structured detection fails — using the VLM's semantic understanding to interpret ambiguous scenes and suggest the next action.
 
 ---
 
 ## Secondary Project: Autonomous Door Opening
 
-I am contributing as co-author to a research paper on autonomous door opening with CALL-M. This task requires tight coordination between the arm and the mobile base — the arm must grasp and turn the handle while the base simultaneously moves to push the door open without losing the grasp.
+I contributed as co-author to a research paper on autonomous door opening with CALL-M. This task required tight coordination between the arm and the mobile base — the arm had to grasp and turn the handle while the base simultaneously moved to push the door open without losing the grasp.
 
-My contributions to this project include:
+My contributions to this project included:
 
 - RGB-D door and handle detection pipeline using the Intel RealSense
 - Robot positioning strategy — computing the approach pose relative to the detected door frame
 - MoveIt 2 motion planning for handle grasping, incorporating force compliance constraints to avoid breaking the handle or losing the grasp during rotation
 - Base coordination — commanding the TriOrb base to move in synchrony with the arm motion as the door swings open
 
-This project is expected to result in a published research paper and represents one of the most mechanically complex manipulation tasks I have worked on.
+This project was one of the most mechanically complex manipulation tasks I worked on during the internship. See the linked research paper and project page below for the full results.
 
 ---
 
@@ -339,7 +339,14 @@ This project is expected to result in a published research paper and represents 
 
 ---
 
-## Expected Outcomes
+## Related Project & Research Pages
+
+- [View Project — A ROS 2 Architecture for Autonomous Mapping (CALL-M)](/projects/p1)
+- [View Research — A Supervised ROS 2 Architecture for Autonomous Mapping](/research/supervised-ros2-mapping)
+- [View Project — Semi-Autonomous Door Opening with a Mobile Manipulator](/projects/p2)
+- [View Research — Semi-Autonomous Door Opening Pipeline](/research/door-opening-mobile-manipulator)
+
+## Outcomes
 
 - Fully functional autonomous mapping system for CALL-M, validated in simulation and transferred to real hardware
 - Prototype restocking pipeline integrating mapping, navigation, perception, and manipulation

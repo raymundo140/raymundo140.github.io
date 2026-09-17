@@ -24,7 +24,7 @@ const { title, institution, location, date, tags, logo } = entry.data
 const { role, status, abstract, pdfUrl, pdfLabel } = item!
 ---
 
-<Layout>
+<Layout title={`${title} | Research`} description={item!.summary}>
   <div class='max-w-4xl mx-auto py-12'>
 
     <a href={base + '/'} class='btn btn-ghost btn-sm mb-8 -ml-2'>

@@ -1,24 +1,35 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { template } from "@/settings";
 
+const base = template.base;
 const pdfPath = `${import.meta.env.BASE_URL}cv/Raymundo_CV.pdf`;
 ---
 
-<Layout title="CV | Raymundo">
+<Layout
+  title="Curriculum Vitae | Raymundo Gómez Vargas"
+  description="A concise overview of my education, robotics research, engineering experience, projects, technical skills, and international academic background."
+>
   <section class="space-y-4">
-    <h1 class="text-3xl font-black">CV</h1>
+    <h1 class="text-3xl font-black">Curriculum Vitae</h1>
+    <p class="text-base-content/70">
+      A concise overview of my education, robotics research, engineering experience, projects,
+      technical skills, and international academic background.
+    </p>
 
     <div class="flex gap-3 flex-wrap">
-      <a class="btn btn-primary" href={pdfPath} target="_blank" rel="noopener">
-        Open in new tab (zoom)
+      <a class="btn btn-primary" href={pdfPath} download>
+        Download CV (PDF)
       </a>
 
-      <a class="btn btn-outline" href={pdfPath} download>
-        Download PDF
+      <a class="btn btn-outline" href={pdfPath} target="_blank" rel="noopener">
+        Open Full Screen
       </a>
     </div>
 
-    <div class="w-full rounded-xl overflow-hidden border border-base-200">
+    <p class="text-sm opacity-70">Last updated: September 2026</p>
+
+    <div class="w-full rounded-xl overflow-hidden border border-base-200 hidden sm:block">
       <iframe
         title="Raymundo CV"
         src={`${pdfPath}#view=FitH`}
@@ -28,7 +39,11 @@ const pdfPath = `${import.meta.env.BASE_URL}cv/Raymundo_CV.pdf`;
     </div>
 
     <p class="text-sm opacity-70">
-      Tip: “Open in new tab” gives the best zoom/search experience.
+      Tip: “Open Full Screen” gives the best zoom/search experience, especially on mobile.
+    </p>
+
+    <p class="text-sm text-base-content/70 pt-4 border-t border-base-200">
+      Looking for a project deep dive? Explore my <a href={base + '/projects'} class="link">Projects</a> and <a href={base + '/research'} class="link">Research</a> pages.
     </p>
   </section>
 </Layout>

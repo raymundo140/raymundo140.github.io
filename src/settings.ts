@@ -180,11 +180,9 @@ export type Project = {
 		company: 'AIST – National Institute of Advanced Industrial Science and Technology',
 		title: 'Robotics Research Intern',
 		location: 'Tsukuba, Japan',
-		dateRange: 'Mar 2026 – Sep 2026',
+		dateRange: 'Jan 2026 – Sep 2026',
 		bullets: [
-			'Developing an autonomous restocking system for the CALL-M mobile manipulator robot, integrating navigation, perception, QR-based identification, and robotic manipulation for convenience store environments.',
-			'Implementing autonomous 3D mapping using SLAM Toolbox and frontier-based exploration, enabling CALL-M to map unknown indoor environments without teleoperation.',
-			'Co-authoring a research paper on autonomous door-opening using CALL-M, involving arm motion planning, door handle detection, and mobile base coordination.',
+			'Developed autonomous mapping, navigation, perception, and mobile-manipulation systems for CALL-M at the CNRS-AIST Joint Robotics Laboratory, with work spanning ROS 2 architecture, SLAM, Nav2, RGB-D perception, exploration, and real-robot validation.',
 		],
 		tags: ['ROS2', 'SLAM', 'Nav2', 'MoveIt2', 'UR5e', 'LiDAR', 'Python', 'Mobile Manipulation'],
 		logo: '/images/experience/w1.png',
@@ -197,8 +195,8 @@ export type Project = {
 		location: 'Monterrey, Mexico',
 		dateRange: 'Feb 2024 – Jun 2024',
 		bullets: [
-			'Assembled, diagnosed, repaired and calibrated industrial robots (UR3/UR5, xArm 5/6, Baxter, ABB YuMi) for manufacturing applications, reducing downtime by 20% through root-cause diagnostics and preventive maintenance.',
-			'Designed and built a high-precision gripper for pick-and-place tasks using SolidWorks, 3D printing, and laser cutting, increasing production throughput by 30% validated through production-cell testing.',
+			'Commissioned, repaired, calibrated, and integrated industrial robot platforms including UR, xArm, Baxter, and ABB YuMi.',
+			'Designed and fabricated a custom pick-and-place gripper that increased production throughput by 30% and helped reduce robot downtime by 20%.',
 		],
 		tags: ['Industrial Robots', 'SolidWorks', '3D Printing', 'Laser Cutting', 'Electrical/Mechanical'],
 		logo: '/images/experience/w2.png',
@@ -210,8 +208,7 @@ export type Project = {
 	  location: 'Monterrey, Mexico',
 	  dateRange: 'Feb 2023 – Mar 2026',
 	  bullets: [
-		'Managed multi-campus compliance data operations overseeing $5.3M in projects and contracts.',
-		'Automated systems reducing manual work for 100+ employees and improving processing time by 21%.',
+		'Managed multi-campus compliance data operations covering $5.3M in projects and contracts while developing automation workflows that supported 100+ employees and improved processing time by 21%.',
 	  ],
 	  tags: ['Automation', 'Data', 'Python', 'Process Improvement'],
 	  logo: '/images/experience/w3.png',
@@ -224,8 +221,7 @@ export type Project = {
 	  location: 'Monterrey, Mexico & USA',
 	  dateRange: '2022 – Present',
 	  bullets: [
-		'Partnered with SMEs in Mexico and the USA to integrate technology and automate operational workflows.',
-		'Delivered custom automation solutions improving commercial results and reducing manual overhead for clients.',
+		'Worked with small and medium-sized businesses in Mexico and the United States to automate operational workflows and integrate practical technology solutions tailored to business needs.',
 	  ],
 	  tags: ['Automation', 'Business Integration', 'Consulting'],
 	  logo: '/images/experience/w4.png',
@@ -237,8 +233,7 @@ export type Project = {
 	  location: 'Monterrey, Mexico',
 	  dateRange: 'Feb 2023 – Jul 2023',
 	  bullets: [
-		'Designed and programmed an interactive simulation and video game for online hosting and licensing using Godot.',
-		'Led UI/UX design and production optimization, achieving a coherent and intuitive user experience.',
+		'Designed and programmed an interactive simulation/video game for online hosting and licensing using Godot, while leading UI/UX design and production optimization.',
 	  ],
 	  tags: ['Godot', 'Game Dev', 'UI Design', 'Simulation'],
 	  logo: '/images/experience/w5.png',
@@ -400,15 +395,15 @@ export type Project = {
   
   export const awards: Award[] = [
 	{
-	  title: 'Student Representative & Honored Graduate — Closing Ceremony Speaker',
+	  title: 'Student Representative & Honored Graduate — BIT International Summer Program',
 	  issuer: 'Beijing Institute of Technology (BIT)',
 	  location: 'Beijing, China',
 	  date: 'Aug 2025',
-	  description: 'Recognized as the honored student of the Electronics Engineering program and selected to deliver the closing ceremony speech representing the entire international cohort.',
+	  description: 'Recognized for outstanding performance in the Electronics Engineering program and selected to deliver the closing ceremony speech representing the international cohort at Beijing Institute of Technology.',
 	  bullets: [
-		'Awarded diploma for outstanding performance in the BIT International Summer Program.',
-		'Selected among all international students to deliver the closing ceremony speech as class representative.',
-		'Received a full scholarship from Tecnológico de Monterrey to attend the program.',
+		'Awarded diploma for outstanding performance.',
+		'Selected to deliver closing ceremony speech as student representative.',
+		'Attended through a full scholarship from Tecnológico de Monterrey.',
 	  ],
 	  link: 'https://www.linkedin.com/feed/update/urn:li:activity:7360058580319850496/',
 	  logo: '/images/education/e3.png',
@@ -418,10 +413,10 @@ export type Project = {
 	  issuer: 'Tecnológico de Monterrey (ITESM)',
 	  location: 'Monterrey, Mexico',
 	  date: 'Oct 2025',
-	  description: 'Recognized by the School of Engineering and Sciences at Tecnológico de Monterrey for being among the top 1% GPA students nationwide during the 2024–2025 academic year.',
+	  description: 'Recognized by Tecnológico de Monterrey for ranking among the top 1% of engineering students by GPA during the 2024–2025 academic year.',
 	  bullets: [
-		'Ranked among the top 1% of GPA students across the entire engineering program at ITESM.',
-		'Honored at the Mejores Promedios ceremony, attended remotely while studying abroad at the University of Seoul.',
+		'Academic average: 98/100.',
+		'Honored through Mejores Promedios while studying abroad at UOS.',
 	  ],
 	  link: 'https://www.linkedin.com/feed/update/urn:li:activity:7385899900934373376/',
 	  logo: '/images/education/e1.png',
@@ -431,11 +426,11 @@ export type Project = {
 	  issuer: 'Tecnológico de Monterrey (ITESM)',
 	  location: 'Monterrey, Mexico',
 	  date: 'Dec 2023',
-	  description: 'Awarded 3rd place at Expo Ingenierías 2023 for "SafeSpace" — an AI-enabled senior home safety system, competing among over 100 participants.',
+	  description: 'Awarded third place for SafeSpace, an AI-enabled home-safety system for older adults, in a competition with more than 100 participants.',
 	  bullets: [
-		'Built an integrated in-house safety system for seniors with AI facial recognition using Python.',
-		'Implemented multi-sensor automation and remote web monitoring via NodeMCU ESP32, Arduino, SolidWorks, and Docker.',
-		'Awarded for outstanding technology entrepreneurship product among 100+ competing teams.',
+		'AI facial recognition using Python.',
+		'Multi-sensor automation and remote web monitoring using NodeMCU/ESP32 and Arduino.',
+		'Combined software, electronics, mechanical design, and rapid prototyping.',
 	  ],
 	  link: 'https://www.linkedin.com/feed/update/urn:li:activity:7139060487178092544/',
 	  logo: '/images/awards/expo.png',
@@ -521,7 +516,7 @@ export const template = {
 }
 
 export const seo = {
-	default_title: 'Raymundo | Robotics Engineer',
-	default_description: 'Robotics and Digital Systems Engineer from Tecnológico de Monterrey (Top 1% GPA), with hands-on experience across Japan, South Korea, China, Canada, and Mexico.',
+	default_title: 'Raymundo Gómez Vargas | Robotics & AI Engineer',
+	default_description: 'Robotics and Digital Systems Engineer specializing in autonomous systems, ROS 2, mobile manipulation, perception, AI, and embedded robotics, with engineering and research experience across Japan, South Korea, China, Canada, and Mexico.',
 	default_image: '/images/pfp.jpg',
   }

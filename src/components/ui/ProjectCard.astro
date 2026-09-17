@@ -17,7 +17,7 @@ const displayName = company ? company : institution
   <div class="relative h-40 overflow-hidden rounded-t-2xl bg-base-300 flex items-center justify-center">
     <img
       src={image}
-      alt=""
+      alt={`${title} cover image`}
       class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
       onerror="this.style.display='none'"
     />

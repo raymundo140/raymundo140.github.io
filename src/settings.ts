@@ -1,6 +1,6 @@
 export const profile = {
 	fullName: 'Raymundo',
-	title: 'Robotics and Digital Systems Engineering',
+	title: 'Robotics & AI Engineer',
 	institute: 'Tecnológico de Monterrey (ITESM)',
 	author_name: 'Roberto Raymundo Gomez Vargas', // Author name to be highlighted in the papers section
 	
@@ -493,7 +493,7 @@ export type Project = {
 
 // Set equal to an empty string to hide the icon that you don't want to display
 export const social = {
-	email: 'robertogomez101010@gmail.com',
+	email: 'raymundo.gomez.rv@gmail.com',
 	linkedin: 'https://www.linkedin.com/in/roberto-raymundo/',
 	github: 'https://github.com/raymundo140',
 	x: '',

@@ -10,332 +10,207 @@ companyUrl: "https://www.aist.go.jp/index_en.html"
 
 ## Overview
 
-At AIST (National Institute of Advanced Industrial Science and Technology) in Tsukuba, Japan, I worked as a Robotics Research Intern focused on designing and implementing a fully autonomous warehouse restocking robot system. The project centered on CALL-M < a custom mobile manipulator robot built at AIST > and spanned the full technical stack, from simulation infrastructure and sensor fusion through navigation, exploration, and high-level task coordination.
+At the CNRS-AIST Joint Robotics Laboratory (JRL) in Tsukuba, Japan, I worked on autonomous mobile manipulation using CALL-M, a research mobile manipulator designed for operation in human-centered indoor environments.
 
-The project integrated a rich sensor suite; dual RPLidar A1M8 units for 360° environment scanning, two ZED Mini stereo cameras and an Intel RealSense D435i mounted on a Universal Robots UR5e arm for depth perception and visual processing, and four ultrasonic sonar sensors for close-range proximity detection. The UR5e arm played a dual role: it served as the manipulation platform for grasping and placement tasks. And its full 6-DOF articulation was actively exploited during mapping, using efficient motion planning algorithms to sweep the Intel RealSense through carefully computed trajectories, capturing depth data from angles and heights the mobile base and fixed-mount camera could not achieve alone. This allowed CALL-M to map occluded spaces, the tops and interiors of shelving units, and narrow areas inaccessible to the base, producing a significantly richer and more geometrically complete 3D map than what a fixed-mount sensor configuration would yield. All sensor streams were fused into a unified perception pipeline that applied reinforcement learning for autonomous exploration, deep learning for grasp pose estimation, computer vision for object and shelf detection, QR-based semantic identification, and full motion planning with MoveIt 2, running across an Intel NUC and an NVIDIA Jetson in a distributed ROS 2 architecture.
+My work focused on two main robotics research projects:
 
-In parallel, I collaborated as co-author on a research paper tackling one of the classic open problems in mobile manipulation: autonomous door opening. The work involved detecting and localizing door handles using RGB-D perception, computing precise approach and grasp strategies under real-world uncertainty, and coordinating the UR5e arm and the omnidirectional base in a tightly coupled motion sequence to actuate the handle and push the door open.
+1. Autonomous mapping and exploration in unknown and dynamic environments.
+2. Autonomous door opening through integrated perception, navigation, and manipulation.
 
-This internship was an intense and rewarding learning experience. Working across the full robotics stack challenged me to grow technically in areas ranging from low-level sensor integration and ROS 2 architecture to machine learning and manipulation planning, while also developing my ability to manage complex, long-horizon engineering projects independently.
+Across both projects, I worked on the full robotics stack rather than a single isolated subsystem. My work included ROS 2 software architecture, LiDAR and RGB-D perception, point-cloud processing, coordinate transforms, SLAM, autonomous exploration, Nav2 navigation, dynamic-obstacle handling, mobile-base control, robot manipulation, system integration, distributed execution, real-robot testing, experimental evaluation, failure analysis, and research writing.
 
----
-
-## The Robot: CALL-M
-
-CALL-M is a research-grade mobile manipulator I worked with daily. Understanding its hardware deeply was essential to designing a robust software architecture around its capabilities and constraints.
-
-### Hardware Architecture
-
-| Subsystem | Component | Role |
-|-----------|-----------|------|
-| Mobile Base | TriOrb omnidirectional platform | Holonomic motion — moves in any direction without rotating |
-| Arm | Universal Robots UR5e (6-DOF) | Manipulation, grasping, product placement |
-| Gripper | Robotiq 2F-85 | Adaptive parallel gripper for box and product grasping |
-| Lidar | 2× RPLidar A1M8 | 360° 2D laser scanning for mapping and obstacle detection |
-| Stereo Cameras | 2× ZED Mini | Depth estimation and visual perception, mounted on Dynamixel servo motors |
-| Depth Camera | Intel RealSense D435i | RGB-D perception for wrist-mounted manipulation sensing |
-| Sonar | 4× MaxBotix MB1403 | Ultrasonic proximity sensing (front, back, left, right) |
-| Main Computer | Intel NUC13 | Navigation, planning, ROS 2 control (ROS_DOMAIN_ID=0) |
-| Perception Computer | NVIDIA Jetson Orin NX | ZED camera processing and visual inference |
-
-The TriOrb base is a particularly interesting platform. Its three omnidirectional wheels arranged at 120° intervals allow the robot to translate in any direction and rotate simultaneously — a property called holonomic motion. This makes it significantly more agile than differential-drive robots in tight indoor spaces, but it also introduces complexity in the motion model that Nav2's default configurations do not handle out of the box. I had to carefully tune the velocity and acceleration constraints to match the physical capabilities of the platform.
-
-The ZED Mini cameras are mounted on Dynamixel servo motors on the left and right sides of the base. This was a design choice I leveraged in my exploration algorithm — the servos can tilt the cameras toward the direction the robot is about to explore, maximizing depth coverage of the upcoming area before the robot even moves there.
-
-The Intel RealSense D435i sits at the wrist of the UR5e arm, tilted 24° downward. At the arm's home configuration this places the camera at approximately 0.98m above the floor, giving an optimal viewing angle for detecting objects on shelves and on the ground.
+The work also resulted in three research-paper efforts: two related to autonomous mapping and one related to autonomous door opening.
 
 ---
 
-## Simulation Infrastructure
+## Project 1 — Autonomous Mapping and Exploration
 
-Before working on the real robot, I built a complete high-fidelity simulation environment in Gazebo Fortress (Ignition) with ROS 2 Humble. This was not a superficial simulation — every sensor, joint, and controller present on the real robot is replicated in simulation with accurate physical parameters.
+The first major project focused on enabling CALL-M to autonomously explore and map unknown indoor environments.
 
-### Why Simulation First
+The goal was not simply to run SLAM while manually driving the robot. I designed a complete ROS 2 architecture that could decide where to explore, generate navigation targets, supervise Nav2 goals, recover from failures, distinguish persistent structure from moving objects, track exploration progress, and determine when the mapping mission had finished.
 
-Developing autonomy directly on the real robot carries risk — failed navigation goals can cause collisions, incorrect sensor configurations waste hours of real hardware time, and bugs in the exploration algorithm could drive the robot into walls. Building the complete simulation first allowed me to iterate the full pipeline at high speed, catch architectural mistakes early, and arrive at the real robot with a system that had already been validated end-to-end.
+The system was built as a modular and distributed ROS 2 architecture so that individual components could be developed, tested, configured, and reused independently.
 
-### Simulation Stack
+The complete mapping pipeline integrated:
 
-The simulation uses Gazebo Fortress as the physics engine, with `ros_gz_bridge` (parameter bridge) providing bidirectional topic translation between Gazebo's internal messaging and ROS 2. I authored a modular xacro-based URDF description that separates the robot's physical model from its simulation-specific plugins, allowing the same description files to be used for both simulation and real robot deployment with a single `use_sim` flag.
+- LiDAR and RGB-D sensing
+- Multimodal scan fusion
+- Static–dynamic obstacle filtering
+- SLAM Toolbox
+- Frontier detection
+- Autonomous target selection
+- Navigation-goal supervision
+- Failure recovery
+- Mission-progress monitoring
+- Nav2 planning and control
+- Real-time execution on the CALL-M mobile manipulator
 
-Key simulation components I implemented:
+### Multimodal Perception and Sensor Fusion
 
-- **Lidar bridge**: Translates Gazebo `LaserScan` messages to ROS 2 `sensor_msgs/LaserScan` on `/call_m/scan/front` and `/call_m/scan/back`
-- **Depth camera bridge**: Bridges the RealSense depth image and pointcloud from Gazebo to ROS 2 on `/call_m/call_m_camera/camera/depth/image_raw/points`
-- **ZED camera bridge**: Bridges both ZED Mini cameras' RGB and depth streams
-- **Sonar bridge**: Translates 4× sonar LaserScan plugins to `sensor_msgs/Range` messages
-- **Odometry bridge**: Bridges the TriOrb wheel odometry to `/call_m/odom`
-- **ros2_control integration**: All joints (3 TriOrb wheels, 6 UR5e arm joints, 2 ZED servo joints) are controlled through `gz_ros2_control` with position and velocity interfaces
-- **TF remapper**: A custom node that handles the namespace remapping needed to correctly resolve TF frames across the `call_m/` namespace prefix
+CALL-M uses multiple sensing modalities to perceive its surroundings. My mapping architecture integrated LiDAR and RGB-D information into a common representation that could be consumed by SLAM and navigation.
 
-The simulation launches in three modes depending on the task:
+This required handling sensor data from different devices and coordinate frames, transforming observations through the ROS 2 TF tree, and producing a consistent representation of the environment.
 
-```
-mode:=sim_only   — Gazebo + sensors + controllers (lightest, used for mapping)
-mode:=sim_fox    — + Foxglove bridge on port 8765 (default for visualization)
-mode:=sim_full   — + MoveIt2 + RViz (used for manipulation development)
-```
+The perception pipeline combined information from the robot's LiDAR and RGB-D sensors so that the mapping system had broader environmental coverage than it would have obtained from a single sensor. The fused data was then used by the mapping, obstacle-filtering, and navigation components.
 
-### Warehouse World
+### SLAM and Map Construction
 
-I constructed a custom Gazebo world representing an indoor warehouse/convenience store environment with shelving units, corridors, open floor areas, and static obstacles. The world is sized to exercise the full range of the exploration algorithm — large enough that the robot must make hundreds of navigation decisions to fully map it, but constrained enough that mapping completes in a reasonable simulation time.
+SLAM Toolbox was used to construct the occupancy-grid map while the robot moved through the environment.
 
----
+Rather than treating SLAM as an isolated component, I integrated it into a larger autonomous-mapping system. The SLAM output was continuously consumed by the exploration framework, which searched for unexplored boundaries and decided where the robot should move next.
 
-## Main Project: Autonomous Restocking System
+The resulting architecture connected perception, mapping, exploration, navigation, and supervision in one continuous autonomous loop.
 
-The restocking system is divided into two sequential phases. Phase 1 must complete successfully before Phase 2 can begin — the map generated in Phase 1 is the foundation everything else depends on.
+### Autonomous Exploration-Management Framework
 
----
+One of my main contributions was the development of a reusable ROS 2 framework for autonomous exploration management.
 
-## Phase 1: Autonomous Mapping
+A simple frontier-exploration algorithm can detect unexplored boundaries and send a goal to the nearest one. In a real robotic system, however, that is not enough. Navigation goals can fail. A frontier can become unreachable. The robot can repeatedly select targets in problematic regions. Different ROS 2 callbacks can compete to issue goals. A mission can appear active even when meaningful exploration has stopped.
 
-### Goal
+I therefore developed a supervisory framework that manages the complete exploration process instead of only selecting the next frontier. The framework includes:
 
-Enable CALL-M to autonomously explore a completely unknown indoor environment, build a geometrically accurate 2D occupancy grid map, and save it to disk — with zero human teleoperation.
+- Frontier extraction and clustering
+- Candidate-target generation
+- Target scoring and selection
+- Navigation-goal dispatch
+- Active-goal supervision
+- Timeout monitoring
+- Failure detection and recovery behavior
+- Spatial memory of failed targets
+- Temporary exclusion of problematic regions
+- Exploration-progress tracking
+- Mission-completion logic
+- Protection against competing asynchronous actions
+- Configurable parameters for different environments and robots
 
-### The 5-Node Pipeline
+The framework sits above Nav2 and treats autonomous exploration as a supervised mission rather than a sequence of independent navigation requests. This made the system more robust during long autonomous runs and reduced repeated attempts to navigate toward poor or unreachable targets.
 
-I designed Phase 1 as a five-node processing pipeline where each node has a single, well-defined responsibility. Data flows from raw sensors through successive layers of abstraction until it reaches the map and the navigation stack.
+### Frontier Selection
 
-```
-Raw Sensors
-    │
-    ▼
-Node 1 — Unified Scan Builder      /call_m/unified_scan
-    │
-    ▼
-Node 2 — Dynamic Obstacle Filter   /call_m/static_scan
-    │                              /call_m/dynamic_scan
-    ├──────────────────────────────────────┐
-    ▼                                      ▼
-Node 3 — SLAM Toolbox              Node 4 — Nav2
-    │          /map                        │     /call_m/cmd_vel
-    └──────────────────────────────────────┘
-                                           ▲
-                                    Node 5 — Exploration Manager
-                                           /exploration/goal
-```
+The exploration manager identifies frontier regions at the boundary between known free space and unexplored space. Candidate frontiers are grouped and evaluated before a navigation target is selected.
 
----
+Instead of relying only on the nearest target, the framework can account for information such as frontier size, distance from the robot, direction of travel, recently attempted goals, previously failed regions, and whether the selected location remains valid as the map changes. This allows the robot to make more deliberate exploration decisions and avoid repeatedly selecting low-value or problematic targets.
 
-### Node 1 — Unified Scan Builder
+### Goal Supervision and Failure Recovery
 
-The most technically complex node in the pipeline. Its job is to take heterogeneous sensor data from five different sensor types — two lidars, four sonars, two ZED depth cameras, and one Intel RealSense — and unify them into a single coherent 360° LaserScan.
+A central part of my work was managing what happens after a navigation goal is sent. The framework monitors the state of the active goal and determines whether navigation is progressing normally.
 
-#### Why sensor fusion matters
+If a goal fails, becomes invalid, or exceeds the allowed execution time, the system can reject the target, update its spatial memory, and choose a different frontier. This is important because autonomous mapping must continue operating without requiring a human to manually reset the navigation system each time a goal fails.
 
-Each sensor on CALL-M has different strengths and blind spots. The RPLidar A1M8 units provide long-range 2D scans but have no vertical resolution — they cannot detect obstacles above or below their scan plane. The ZED Mini cameras provide rich depth information in a wide FOV but have a limited range and cannot see directly to the sides of the robot. The sonars provide reliable close-range detection in their respective directions but with very coarse angular resolution (58° beam width). The Intel RealSense provides the highest-quality RGB-D data but faces downward from the wrist and covers a small forward arc.
+### Mission Completion
 
-Fusing all of these into one unified scan gives the navigation stack a complete, redundant picture of the robot's surroundings that no single sensor could provide alone.
+Another problem I addressed was deciding when autonomous exploration should stop. A mapping system should not continue generating targets indefinitely once the useful reachable environment has already been explored.
 
-#### Sub-node architecture
+The framework therefore monitors exploration progress and the availability of valid frontier candidates. When the system determines that meaningful exploration is complete, it can terminate the mission automatically, making the architecture suitable for unattended autonomous mapping rather than only short demonstrations.
 
-Node 1 is composed of six sub-nodes running in parallel:
+### Static–Dynamic Obstacle-Filtering Framework
 
-**`zed_depth_to_pointcloud` (×2)** — I wrote this node from scratch. The ZED Mini cameras publish depth images as `sensor_msgs/Image` where each pixel is a float32 depth value in meters. The navigation stack needs `sensor_msgs/PointCloud2`. My node performs the back-projection calculation:
+My second major contribution to the mapping project was a reusable ROS 2 framework for separating static structure from moving obstacles.
 
-```
-x = (u - cx) / fx * z
-y = (v - cy) / fy * z
-```
+Dynamic objects create a major problem for conventional mapping systems: if a person walks through the environment while the robot is building an occupancy map, the person's LiDAR or depth measurements can be integrated into the map and incorrectly stored as permanent structure. The purpose of the framework was therefore to distinguish observations that represent persistent environmental geometry from observations that are likely to belong to moving objects.
 
-where `(cx, cy)` is the camera principal point and `(fx, fy)` are the focal lengths computed from the camera's field of view. I use NumPy to perform this computation on all 230,400 pixels simultaneously rather than looping, keeping processing time under 5ms per frame. Invalid depths (NaN, below 0.3m, above 8.0m) are filtered before packing the result into a PointCloud2 message.
+The pipeline includes:
 
-**`sonar_to_scan`** — Another node I wrote from scratch. The MaxBotix MB1403 sonar sensors publish `sensor_msgs/Range` — a single distance measurement with a 58° cone beam width. The laser scan merger expects `sensor_msgs/LaserScan`. My conversion spreads the single distance reading across 58 rays (1° resolution) centered on the sonar's mounting direction, correctly representing the sonar's angular uncertainty. Invalid readings (outside 0.30m–5.00m range) are set to infinity rather than discarded, correctly signaling "no obstacle detected" rather than introducing false data.
+- Processing of incoming scan data
+- Temporal comparison of observations
+- Separation of static and dynamic measurements
+- Spatial clustering of dynamic observations
+- Bounding-box generation
+- Object association across frames
+- Object tracking and velocity estimation
+- Separate static and dynamic outputs
 
-**`depth_filter_scan_converter` (×3)** — This is an external package (Ocean's `depth-filter-scan-converter`) that takes a PointCloud2 and produces a LaserScan slice at a configurable height band above the floor. I configured three instances — one for the Intel RealSense and one for each ZED Mini — each with carefully tuned parameters:
+The static component can be sent to the mapping subsystem so that SLAM primarily receives persistent environmental structure, while the dynamic component remains available to the navigation stack so that moving people or objects can still be detected and avoided. The goal is not to make moving obstacles invisible to the robot — it is to prevent them from becoming permanent artifacts in the map while still preserving them for safe real-time navigation.
 
-- `height_offset: 0.06m` — the TriOrb base height above the floor, measured experimentally from odometry
-- `min_height: 0.05m` — ignore floor reflections
-- `max_height: 1.50m` — capture everything up to the robot's maximum clearance height
-- `cliff_detect: true` — detect floor holes and steps as obstacles
+### Distributed ROS 2 Architecture
 
-**`laserscan_toolbox_node`** — Another Ocean package (`multi-laserscan-toolbox-ros2`) that merges all individual LaserScan inputs into a single unified scan using odometry interpolation to correct for the robot's motion between scan timestamps. I configured it to merge: 2 lidar scans + 4 sonar scans + 3 depth-converted scans = 9 input streams into one `/call_m/unified_scan`.
+The complete autonomous-mapping system was distributed across the robot's onboard computers and the operator workstation. This required coordinating multiple ROS 2 nodes, sensors, transforms, navigation components, and visualization tools over the network.
 
----
+The architecture was designed so that individual subsystems could be configured independently and reused in future robotic platforms. This work gave me extensive experience debugging distributed robotics systems, including timing, transforms, topic flow, node coordination, sensor consistency, and interactions between navigation and perception components.
 
-### Node 2 — Dynamic Obstacle Filter
+### Simulation and Real-Robot Validation
 
-Node 2 receives the unified scan and splits it into two output streams:
+I validated the mapping architecture in both simulation and on the physical CALL-M platform. Simulation was used to test exploration behavior, navigation supervision, recovery logic, and system-level performance in controlled environments. The physical-robot experiments were then used to evaluate the complete stack under real sensing, networking, localization, navigation, and dynamic-environment conditions.
 
-- `/call_m/static_scan` → fed to SLAM Toolbox (only permanent obstacles should influence the map)
-- `/call_m/dynamic_scan` → fed to Nav2's local costmap (moving obstacles influence navigation but not the map)
-
-For Phase 1, the dynamic filter operates in **template mode** — all scan data passes to static_scan while the classification algorithm is being developed. The architectural separation is in place so that when the real dynamic filtering is implemented in Phase 2, no other part of the pipeline needs to change.
+The real-robot deployment required the full system to operate simultaneously — physical LiDAR and RGB-D sensors, TF transforms, sensor fusion, obstacle filtering, SLAM, frontier generation, target selection, Nav2, goal supervision, robot motion, and distributed ROS 2 communication — resulting in a complete end-to-end autonomous-mapping system rather than a standalone algorithm.
 
 ---
 
-### Node 3 — SLAM Toolbox
+### Research Paper — Autonomous Mapping Architecture
 
-SLAM Toolbox runs in asynchronous mapping mode, subscribing to `/call_m/static_scan` and building a 2D occupancy grid map in the `map` frame. Key configuration decisions I made:
+**A ROS 2 Architecture for Autonomous Mapping: Modular Exploration Management and Static–Dynamic Obstacle Filtering Frameworks**
 
-- **Solver**: `CeresSolver` with `SPARSE_NORMAL_CHOLESKY` linear solver and `SCHUR_JACOBI` preconditioner — the best performance trade-off for the map size
-- **Scan topic**: `/call_m/static_scan` (not the raw lidar scan, so the depth cameras contribute to the map)
-- **Mode**: `mapping` (not localization — we are building the map, not localizing within a known one)
-- **odom_frame**: `call_m/odom` — matching the namespaced TF frame published by the TriOrb odometry
-- **Resolution**: 0.05m per cell — sufficient for navigation while keeping memory usage manageable
-- **Loop closure**: enabled with chain size 10, allowing the robot to correct accumulated drift when it revisits previously mapped areas
+- Role: First author
+- Research conducted at: CNRS-AIST JRL, Tsukuba, Japan
+- Submission: IEEE/SICE SII 2027
 
----
+This paper presents the complete autonomous-mapping architecture developed during my internship, describing how ROS 2, multimodal perception, SLAM Toolbox, Nav2, autonomous exploration, navigation supervision, and dynamic-obstacle filtering were integrated into one modular system. A major focus of the paper is the exploration-management framework — frontier extraction, candidate evaluation, target selection, goal supervision, failure recovery, progress monitoring, and mission-completion logic — alongside the static–dynamic obstacle-filtering framework and how separating persistent and moving observations can improve mapping in dynamic environments. The system was evaluated through simulation and real-robot experiments on CALL-M.
 
-### Node 4 — Nav2
+### Research Paper — Static–Dynamic Obstacle Filtering
 
-The full Nav2 navigation stack handles path planning and obstacle avoidance. I configured it with:
+**Static–Dynamic Obstacle Filtering for Autonomous Robotic Mapping** *(working title)*
 
-- **Global planner**: NavFn (Dijkstra-based global path planning on the occupancy grid)
-- **Local controller**: DWB (Dynamic Window Approach) with critics for rotation-to-goal, oscillation suppression, base obstacle avoidance, goal alignment, path alignment, path distance, and goal distance
-- **Global costmap**: static layer (from `/map`) + obstacle layer (from `/call_m/static_scan`)
-- **Local costmap**: static layer + voxel layer (from `/call_m/dynamic_scan`)
-- **Robot footprint**: circular approximation of the TriOrb base radius (0.37m)
-- **Transform tolerance**: 0.2s — to handle timing jitter between the simulation clock and node processing
-
-The costmap setup ensures that static obstacles (walls, shelving) influence both global path planning and local avoidance, while dynamic obstacles (people, moving boxes) only affect local avoidance without contaminating the map.
+This research effort focuses specifically on the dynamic-environment perception problem that emerged from the autonomous-mapping project — how a mobile robot can distinguish persistent environmental structure from moving obstacles before information is incorporated into the map. The framework covers scan-level processing, temporal observation analysis, static/dynamic classification, spatial clustering, object tracking, velocity estimation, and separate mapping and navigation outputs. The central idea is to preserve moving objects for real-time collision avoidance while reducing the probability that those objects are incorrectly stored as permanent occupancy-grid obstacles.
 
 ---
 
-### Node 5 — Exploration Manager
+## Project 2 — Autonomous Door Opening
 
-The exploration manager is the primary research contribution of Phase 1 and the component I am investing the most effort into. Its job is to make autonomous decisions about where the robot should go next in order to map the environment as efficiently as possible.
+My second major AIST project focused on autonomous door opening with CALL-M. This project required tighter integration between perception, navigation, mobile-base positioning, manipulation, and physical contact with the environment.
 
-My approach followed a deliberate two-stage research methodology: first, I built a classical heuristic baseline to get the full pipeline working end-to-end and generate reference data; then, I worked on replacing the heuristic decision-maker with a reinforcement learning policy trained against that baseline. This structure was intentional — a working baseline is a prerequisite for meaningful RL training, and the performance gap between the two approaches is itself a measurable research result.
+The goal was to create a ROS 2 pipeline capable of finding a door, approaching it autonomously, detecting and localizing the door handle, aligning the mobile base, moving the robot arm to a pre-grasp configuration, grasping and actuating the handle, and opening the door. Unlike autonomous mapping, where the robot interacts mainly with free space and obstacles, door opening requires precise physical interaction with the environment — small perception or positioning errors can directly affect whether the robot can grasp and actuate the handle.
 
-#### Stage 1 — Classical Baseline: FFD + Information Gain Scoring
+### Door Perception
 
-The baseline exploration policy uses Fast Frontier Detection (FFD) combined with an Information Gain / Travel Cost scoring function. A frontier is defined as a free cell (occupancy value 0) adjacent to at least one unknown cell (occupancy value -1) — representing the boundary between explored and unexplored space.
+The perception system uses camera-based machine learning to detect the target door and door handle. During the search stage, the robot observes the environment until the target door is detected. Once a door is identified, the detection is combined with RGB-D information to estimate the target in 3D — depth and point-cloud data recover the spatial position of the handle rather than relying only on a 2D image detection. The resulting position is then transformed through the ROS 2 TF tree into the coordinate frames required by the mobile base and manipulator.
 
-My baseline implementation:
-1. Parses the current `/map` occupancy grid as a NumPy array
-2. Detects all frontier cells via 8-connected neighborhood checks
-3. Clusters adjacent frontier cells into frontier regions using BFS
-4. Filters clusters smaller than 3 cells (noise rejection)
-5. Scores each cluster as `score = information_gain / travel_cost`
-6. Selects the highest-scoring frontier and sends it to Nav2 as a navigation goal
+### Autonomous Navigation
 
-Information gain is estimated by ray casting 36 rays (every 10°, up to 8m) from each frontier centroid and counting unknown cells encountered before hitting an obstacle. This provides a fast, geometry-based approximation of how much new area the robot would reveal by visiting each candidate.
+After the target door is detected, Nav2 is used to move CALL-M toward an approach position, bringing the robot close enough for manipulation while maintaining sufficient distance for the arm to operate. This required coordinating the perception output with the mobile navigation system and ensuring that the robot approached the door from a usable configuration.
 
-The baseline is fully functional and serves two purposes: it validates the complete pipeline end-to-end, and it generates the exploration trajectory data — map states, frontier sets, decisions made, coverage achieved — that I use to train and evaluate the RL policy.
+### Handle Localization
 
-#### Stage 2 — Research Contribution: Reinforcement Learning Exploration Policy
+The handle-detection pipeline combines visual detection and RGB-D sensing to estimate the handle's 3D position. This stage connects perception directly to manipulation — the system must not only determine that a handle is present, but estimate where it is relative to the robot so that the mobile base and arm can move to a valid manipulation pose.
 
-The central research question I investigated was whether a learned exploration policy can outperform the classical heuristic in terms of mapping efficiency — specifically: *does the robot cover more area per unit of travel distance when exploration decisions are made by a trained policy rather than a hand-crafted scoring function?*
+### Fine Base Alignment
 
-I framed this as a Markov Decision Process (MDP):
+After the coarse Nav2 approach, the mobile base performs a finer alignment step that compensates for residual error from navigation and places the handle inside the robot arm's reachable workspace. Because CALL-M uses an omnidirectional base, the platform can make lateral and rotational corrections without requiring conventional car-like motion — particularly useful when aligning the manipulator with a door handle.
 
-- **State**: a local occupancy grid patch centered on the robot, current frontier set with positions and sizes, robot velocity, and elapsed mission time
-- **Action**: selection of the next frontier goal from the detected candidate set
-- **Reward**: positive reward proportional to new cells mapped since the last decision, negative reward proportional to distance traveled, penalty for blacklisted goals and stuck states
-- **Episode**: one complete exploration run from an empty map to full coverage or timeout
+### Arm Manipulation
 
-The policy was trained entirely in simulation using the Gazebo environment I built for Phase 1, which allowed thousands of training episodes to be run without real hardware time. The trained policy was deployed as a drop-in replacement for the heuristic scorer inside the exploration manager node — the rest of the pipeline (Nav2, SLAM Toolbox, sensor fusion) remained identical, making the comparison between baseline and RL policy clean and controlled.
+Once the handle pose is available and the base is aligned, the UR5e manipulator moves toward a pre-grasp position, then performs the physical actions required to open the door: approach the handle, position the end effector, close the gripper, actuate the handle, pull the door, and complete the opening motion. This stage required careful coordination between estimated target pose, arm configuration, gripper behavior, and the geometry of physical contact.
 
-The RL integration was designed so that the node could switch between the heuristic baseline and the learned policy at launch time via a single parameter, enabling direct A/B comparison in the same environment.
+### Real-Robot Experimentation
 
-#### ZED Servo Integration (Novel Contribution)
+The complete door-opening system was evaluated in real-robot trials covering the full end-to-end pipeline rather than only individual perception or manipulation components. The experiments made it possible to separate failures caused by perception, navigation, 3D localization, base alignment, pre-grasp positioning, grasp execution, and physical handle interaction.
 
-Regardless of which exploration policy is active, when a frontier is selected I command the ZED servo motors to pre-tilt the cameras toward the direction of the selected frontier before the robot begins moving. The tilt angle is computed from the frontier distance:
+The results showed that the upstream perception and navigation stages were generally more repeatable than the final physical-interaction stage. The most difficult part of the task was the transition from estimated geometry to real physical contact, where small positioning errors, grasp depth, latch displacement, handle geometry, and force limits can determine whether the door opens successfully. This failure analysis was an important part of the research because it identified where future improvements should be concentrated, including closed-loop pose correction, adaptive manipulation, and more robust contact-aware control.
 
-```python
-tilt_rad = atan2(camera_height, distance)
-```
+### Research Paper — Autonomous Door Opening
 
-This pre-positioned the depth cameras to maximize coverage of the area the robot was about to enter — capturing obstacle data ahead of arrival rather than only after. This was a hardware-specific contribution enabled by CALL-M's servo-mounted cameras that has no equivalent on robots with fixed sensor placement.
+**Integrated Perception, Navigation, and Manipulation for Autonomous Door Opening with a Mobile Manipulator**
 
-#### Blacklisting and Recovery
-
-Frontiers that Nav2 could not reach or that timed out after 120 seconds were blacklisted for 60 seconds, preventing the robot from repeatedly attempting unreachable goals. This applied to both the heuristic and RL policies. If all frontiers were blacklisted the system entered STUCK status and waited for the map to update with new candidates.
-
-#### Visualization
-
-During exploration I publish:
-- `/exploration/frontiers` as `visualization_msgs/MarkerArray` — green sphere marks the currently selected frontier, blue spheres mark all other candidates
-- `/exploration/goal` as `geometry_msgs/PoseStamped` — the active Nav2 goal pose
-- `/exploration/status` as `std_msgs/String` — current state (EXPLORING / COMPLETE / STUCK / PAUSED / WAITING_FOR_MAP)
-
-These feed directly into Foxglove for real-time monitoring of exploration progress.
+This paper presents the complete door-opening system developed and evaluated on CALL-M, covering machine-learning-based door and handle detection, RGB-D perception, 3D target localization, ROS 2 coordinate transforms, Nav2 autonomous approach, omnidirectional base alignment, UR5e manipulation, grasping, handle actuation, and door opening. A key contribution is the system-level integration of perception, navigation, and manipulation rather than evaluating each subsystem independently, with stage-level failure analysis distinguishing successful perception and navigation from failures that occur during physical manipulation.
 
 ---
 
-### Real-Time Monitoring
+## What I Contributed at AIST
 
-I built two complementary monitoring systems:
+**Robotics Software** — Developed ROS 2 nodes and modular robotics software; integrated distributed robotics components across multiple computers; worked with ROS 2 topics, services, actions, parameters, and TF; integrated perception, SLAM, Nav2, exploration, and manipulation components.
 
-**Foxglove Dashboard** — A configured Foxglove Studio layout connecting to the bridge on `ws://localhost:8766` with:
-- 3D panel showing the occupancy grid (white=free, grey=unknown, black=occupied), all scan layers color-coded by sensor type, frontier markers, Nav2 goal arrow, and both costmaps
-- Camera panels for ZED left, ZED right, and Intel RealSense
-- Status panels for exploration state and odometry
+**Autonomous Navigation** — Integrated Nav2 into autonomous research pipelines; developed higher-level supervision around navigation goals; implemented goal monitoring, failure recovery, and target reselection; worked with autonomous exploration in unknown environments.
 
-**Terminal Dashboard (`phase1_monitor.py`)** — A curses-based terminal application that launches automatically alongside the mapping pipeline, showing:
-- Exploration status (EXPLORING / COMPLETE / STUCK / PAUSED)
-- Frontier count and obstacle status
-- Robot position in map frame
-- Map dimensions, coverage percentage, free and occupied cell counts
-- Per-sensor publish rates for all 9 sensor streams
-- System health summary (active sensor count, SLAM status, Foxglove URL)
-- Elapsed runtime
+**Mapping and SLAM** — Integrated SLAM Toolbox into an autonomous exploration architecture; processed multimodal sensor information for mapping; developed logic for exploration progress and mission completion; evaluated mapping behavior in simulation and on physical hardware.
 
----
+**Dynamic-Environment Perception** — Developed static–dynamic obstacle filtering; worked with LiDAR and RGB-D data; implemented clustering, tracking, and velocity-estimation components; separated information intended for mapping from information needed for real-time navigation.
 
-## Phase 2: Autonomous Restocking Pipeline
+**Computer Vision and 3D Perception** — Integrated machine-learning-based door and handle detection; worked with RGB-D sensing and point clouds; converted 2D detections into 3D target estimates; used ROS 2 TF to transform targets between sensor, robot, and world frames.
 
-*(Architecture designed during the internship; implementation was in progress at the time my internship concluded.)*
+**Mobile Manipulation** — Integrated mobile navigation and arm manipulation; worked with the UR5e manipulator and gripper; developed the sequence from door detection through approach, alignment, grasping, handle actuation, and door opening; evaluated manipulation failures during real physical interaction.
 
-Phase 2 uses the map produced by Phase 1, enriched with semantic annotations marking supply zones, shelf locations, and return areas.
+**System Integration** — Worked on complete end-to-end robotic systems rather than isolated algorithms; debugged interactions between perception, navigation, mapping, transforms, networking, and manipulation; deployed software on the physical CALL-M research robot.
 
-### Pipeline
-
-1. **Navigate to supply zone** — Using Nav2 with the saved map for global localization (AMCL)
-2. **QR code identification** — The Intel RealSense captures the QR code on each box. A custom ROS 2 node decodes the QR and queries a product database to determine which shelf the box belongs to
-3. **RGB-D product detection** — The ZED Mini cameras verify the box contents and detect the target shelf position using depth-informed bounding box detection
-4. **Navigate to target shelf** — Nav2 routes the robot through the environment to the correct shelf location
-5. **Manipulation with MoveIt 2** — I use MoveIt 2 to plan and execute the arm trajectory for grasping the box, approaching the shelf, placing products, and returning the empty box
-6. **Verification** — Post-placement verification using the RealSense confirms correct placement before the robot returns for the next box
-
-### Recovery Strategies
-
-The system handles four failure modes:
-
-| Failure | Recovery Strategy |
-|---------|-----------------|
-| Dynamic obstacle blocks path | Nav2 replans around obstacle; if blocked >30s, request human intervention |
-| QR code unreadable | Reposition robot, retry ×3; escalate to VLM for visual identification |
-| Product detection failure | Retry with adjusted lighting compensation; flag for manual review |
-| Grasp failure | Re-plan grasp pose with updated depth data; retry ×2 before aborting |
-
-I evaluated Vision-Language Models (VLMs) as a potential fallback layer for cases where structured detection fails — using the VLM's semantic understanding to interpret ambiguous scenes and suggest the next action.
-
----
-
-## Secondary Project: Autonomous Door Opening
-
-I contributed as co-author to a research paper on autonomous door opening with CALL-M. This task required tight coordination between the arm and the mobile base — the arm had to grasp and turn the handle while the base simultaneously moved to push the door open without losing the grasp.
-
-My contributions to this project included:
-
-- RGB-D door and handle detection pipeline using the Intel RealSense
-- Robot positioning strategy — computing the approach pose relative to the detected door frame
-- MoveIt 2 motion planning for handle grasping, incorporating force compliance constraints to avoid breaking the handle or losing the grasp during rotation
-- Base coordination — commanding the TriOrb base to move in synchrony with the arm motion as the door swings open
-
-This project was one of the most mechanically complex manipulation tasks I worked on during the internship. See the linked research paper and project page below for the full results.
-
----
-
-## Technical Contributions Summary
-
-| Contribution | Description |
-|---|---|
-| Simulation infrastructure | Full Gazebo Fortress sim of CALL-M with all sensors, controllers, and TF tree |
-| Sensor fusion pipeline | 9-stream sensor fusion into unified LaserScan (lidars + sonars + depth cameras) |
-| Sonar→LaserScan converter | Custom ROS 2 node: Range messages to LaserScan with 58° beam model |
-| ZED depth converter | Custom ROS 2 node: depth image back-projection to PointCloud2 using NumPy |
-| Exploration baseline | FFD + Information Gain / Travel Cost scoring — generates training data and reference performance |
-| RL exploration policy | Reinforcement learning policy trained in simulation to replace heuristic frontier selection |
-| SLAM configuration | SLAM Toolbox async mapping tuned for TriOrb holonomic base |
-| Nav2 configuration | Full Nav2 stack configured for omnidirectional robot with sensor fusion costmaps |
-| Terminal monitor | Curses-based real-time dashboard for exploration monitoring |
-| Foxglove layout | Multi-panel real-time visualization of map, sensors, frontiers, and robot state |
-| Phase 1 launch system | Single-command autonomous mapping pipeline with timed startup sequencing |
+**Research** — Designed and executed simulation and physical-robot experiments; performed quantitative evaluation and failure analysis; documented system architecture and experimental methodology; contributed to three robotics research-paper efforts; served as first author on the autonomous-mapping paper submitted to IEEE/SICE SII 2027.
 
 ---
 
@@ -346,10 +221,10 @@ This project was one of the most mechanically complex manipulation tasks I worke
 - [View Project — Semi-Autonomous Door Opening with a Mobile Manipulator](/projects/p2)
 - [View Research — Semi-Autonomous Door Opening Pipeline](/research/door-opening-mobile-manipulator)
 
-## Outcomes
+## Closing
 
-- Fully functional autonomous mapping system for CALL-M, validated in simulation and transferred to real hardware
-- Prototype restocking pipeline integrating mapping, navigation, perception, and manipulation
-- Technical documentation covering system architecture, data flows, state machine design, experimental results, and future work
-- Research paper base for autonomous mapping and navigation in restocking environments
-- Co-authored research paper on autonomous door opening with CALL-M
+My internship at AIST gave me the opportunity to work across nearly the entire autonomy stack on a real mobile manipulator, moving between perception, mapping, autonomous decision-making, navigation, manipulation, distributed software, and physical experimentation depending on what the system needed.
+
+The two projects addressed different sides of intelligent robotics. The autonomous-mapping project focused on long-horizon autonomy: deciding where to explore, supervising repeated navigation actions, recovering from failures, handling moving obstacles, and determining when a mission is complete. The door-opening project focused on perception-to-action integration and physical interaction: detecting a target, approaching it, estimating its 3D position, aligning the robot, manipulating the handle, and analyzing failures during contact.
+
+Together, the projects resulted in three research-paper efforts and extensive hands-on experience developing, integrating, debugging, and evaluating intelligent robotic systems on physical hardware.

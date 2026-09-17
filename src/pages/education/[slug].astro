@@ -1,7 +1,14 @@
 ---
 import { getCollection, render } from 'astro:content'
 import Layout from '../../layouts/Layout.astro'
-import { template, education } from '@/settings'
+import ProjectCard from '@/components/ui/ProjectCard.astro'
+import { template, education, projects } from '@/settings'
+
+const keyProjectSlugsByEducation: Record<string, string[]> = {
+  e1: ['p3', 'p4', 'p5', 'p9'],
+  e2: ['p7'],
+  e3: ['p8'],
+}
 
 export async function getStaticPaths() {
   const entries = await getCollection('education')
@@ -21,6 +28,10 @@ if (!entry) {
 const { Content } = await render(entry)
 const item = education.find(e => e.slug === slug)
 const { institution, program, field, location, dateRange, grade, tags, logo, institutionUrl } = entry.data
+
+const keyProjects = (keyProjectSlugsByEducation[slug ?? ''] ?? [])
+  .map(projectSlug => projects.find(p => p.slug === projectSlug))
+  .filter((p) => p !== undefined)
 ---
 
 <Layout title={`${institution} | Education`} description={`${program} · ${field} — ${institution}, ${location} (${dateRange}).`}>
@@ -53,6 +64,19 @@ const { institution, program, field, location, dateRange, grade, tags, logo, ins
     <div class='prose prose-lg max-w-none'>
       <Content />
     </div>
+
+    {keyProjects.length > 0 && (
+      <div class='not-prose mt-10'>
+        <h2 class='text-2xl font-bold mb-6'>Key Projects</h2>
+        <div class='grid grid-cols-1 sm:grid-cols-2 gap-5'>
+          {keyProjects.map(project => {
+            return (
+              <ProjectCard project={project} base={base} />
+            )
+          })}
+        </div>
+      </div>
+    )}
 
   </div>
 </Layout>

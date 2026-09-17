@@ -1,6 +1,6 @@
 export const profile = {
 	fullName: 'Raymundo',
-	title: 'Intelligent Robotics & Autonomous Systems Engineer',
+	title: 'Robotics & AI Engineer',
 	institute: 'Tecnológico de Monterrey (ITESM)',
 	author_name: 'Roberto Raymundo Gomez Vargas', // Author name to be highlighted in the papers section
 
@@ -510,7 +510,7 @@ export const template = {
 }
 
 export const seo = {
-	default_title: 'Raymundo Gómez Vargas | Intelligent Robotics & Autonomous Systems Engineer',
+	default_title: 'Raymundo Gómez Vargas | Robotics & AI Engineer',
 	default_description: 'Robotics engineer building autonomous systems across perception, navigation, manipulation, AI, and embedded control. Research and engineering experience at AIST and international programs across Japan, South Korea, China, Canada, and Mexico.',
 	default_image: '/images/pfp.jpg',
   }

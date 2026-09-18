@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets'
 import SocialIcons from './SocialIcons.astro'
-import { template } from '@/settings'
+import { template, social } from '@/settings'
 const { fullName, title, institute, profilePicture } = Astro.props
 const base = template.base
 ---
@@ -32,6 +32,9 @@ const base = template.base
     <div class='flex gap-4 max-w-xs'>
       <SocialIcons />
     </div>
+    <a href={`mailto:${social.email}`} class='text-sm text-base-content/60 hover:text-base-content'>
+      {social.email}
+    </a>
   </div>
 </div>
 

@@ -1,29 +1,36 @@
 ---
 title: "Embedded Tractor Telemetry & Control — John Deere"
-summary: "STM32 + Raspberry Pi embedded system combining real-time task scheduling, UART telemetry, transmission-model execution, logging, and a multithreaded Python dashboard."
-tags: ["STM32", "Raspberry Pi", "Real-Time Systems", "UART", "Python", "Telemetry"]
+summary: "STM32 + Raspberry Pi embedded system for a John Deere-sponsored challenge, combining real-time task scheduling, bidirectional UART telemetry, transmission-model execution, CSV logging, and a multithreaded Tkinter/Matplotlib dashboard with software-controlled throttle simulation."
+tags: ["STM32", "Raspberry Pi", "C/C++", "Python", "UART", "Real-Time Systems", "Telemetry", "Tkinter", "Matplotlib"]
 image: "/images/projects/p9.png"
+repoUrl: "https://github.com/raymundo140/JohnDeereSTM32RaspPi"
 pdfUrl: "/papers/projects/p9.pdf"
 ---
 
 ## Overview
 
-Built an embedded tractor-control and telemetry prototype using an STM32 and Raspberry Pi for a John Deere-sponsored systems-on-chip project.
+For a John Deere-sponsored embedded-systems challenge at Tecnológico de Monterrey, I built an end-to-end tractor control and telemetry prototype around an STM32 and Raspberry Pi. The STM32 handled time-sensitive embedded functions — input acquisition, the transmission model, UART communication, and local outputs — while the Raspberry Pi handled telemetry, CSV logging, visualization, and operator interaction. I worked across the complete project: embedded architecture, STM32 firmware, Raspberry Pi software, serial communication, the telemetry pipeline, the graphical interface, performance optimization, and integration.
 
-## Architecture
+## STM32 Embedded Controller
 
-The STM32 handled real-time input acquisition, transmission-model execution, UART communication, and hardware outputs. The Raspberry Pi handled telemetry, logging, visualization, and operator interaction.
+The STM32 firmware, written in C/C++ in STM32CubeIDE, is organized into five periodic tasks — matrix-keypad input, ADC acquisition, transmission-model execution, UART communication, and LCD output — scheduled as a real-time task set so input sampling, model execution, serial communication, and display updates coexist predictably. The transmission model tracks throttle, engine speed, vehicle speed, and gear, forming the main telemetry stream.
 
-The STM32 software was divided into periodic tasks for keypad input, ADC acquisition, transmission-model execution, UART communication, and LCD output.
+## Bidirectional UART
 
-## Telemetry
+UART is a true two-way interface, not a one-directional telemetry link. The STM32 streams vehicle-state telemetry to the Raspberry Pi; in the opposite direction, a Tkinter interface on the Pi can send a software-generated throttle value that the STM32 uses as the model input instead of the physical potentiometer once simulation mode is enabled through the keypad.
 
-The Raspberry Pi received live data over UART, logged it to CSV, and displayed parameters such as throttle, engine speed, vehicle speed, and gear. A Tkinter interface also allowed the operator to command throttle in simulation mode.
+## Raspberry Pi Telemetry & the Performance Bottleneck
 
-## My Contribution — Performance Improvement
+The Raspberry Pi, running Python on Raspberry Pi OS, parses incoming telemetry, logs it to CSV, and plots it live. The first implementation coupled serial reading, CSV logging, and Matplotlib updates in the same execution path, which caused blocking and slower visualization. I reorganized the software so acquisition, storage, and plotting run independently using Python threading and a shared queue, reducing the plotting interval from 200 ms to 50 ms for a substantially more responsive display.
 
-The first dashboard implementation coupled serial I/O, logging, and plotting in one path. I reorganized the software with Python threading and a shared queue so data acquisition, storage, and visualization could run independently.
+## Operator Interface & Two Operating Modes
+
+A Tkinter throttle slider lets the operator drive the simulated tractor directly from the Raspberry Pi. The system supports two modes: physical-input mode, where the STM32 reads the ADC and feeds the physical throttle into the model, and simulation mode, where the Tkinter slider's value is sent over UART and used as the model input instead.
 
 ## Result
 
-The final system connected real-time embedded firmware, Linux-based processing, serial communication, operator controls, telemetry logging, and live visualization in one end-to-end prototype.
+The completed prototype, integrated into a 3D-printed physical tractor, connected real-time STM32 firmware and Linux-based Raspberry Pi software into one bidirectional embedded-to-Linux control and telemetry pipeline — streaming throttle, engine speed, vehicle speed, and gear over UART, logging to CSV, and supporting both physical and software-controlled throttle input.
+
+## My Role
+
+I worked across the complete project: the embedded architecture, STM32 firmware and real-time task scheduling, Raspberry Pi software, bidirectional serial communication, the Tkinter/Matplotlib telemetry pipeline, the multithreaded performance rework, the physical prototype, and system testing and integration.

@@ -1,36 +1,35 @@
 ---
-title: "FPGA Tractor Simulator with Unity"
-summary: "DE10-Lite FPGA and Unity co-design project using VHDL, Assembly, serial communication, accelerometer-based steering, and bidirectional real-time telemetry."
-tags: ["FPGA", "VHDL", "Assembly", "Unity", "C#", "Serial Communication"]
+title: "FPGA Tractor Simulator with Unity — John Deere"
+summary: "Bidirectional FPGA-to-Unity tractor simulator built for a John Deere collaboration, using a Terasic DE10-Lite (VHDL and Assembly), accelerometer-based steering, and serial telemetry that returns live simulation state to the board's seven-segment displays."
+tags: ["FPGA", "VHDL", "Assembly", "Unity", "C#", "Serial Communication", "RTL", "Accelerometer"]
 image: "/images/projects/p10.png"
 pdfUrl: "/papers/projects/p10.pdf"
 ---
 
 ## Overview
 
-Built a hardware–software tractor simulator using a Terasic DE10-Lite FPGA and Unity. Physical controls on the FPGA drove a virtual tractor, while simulation telemetry was sent back to the board for live hardware display.
+For the TE2002B Design of Systems-on-Chip course at Tecnológico de Monterrey, in collaboration with John Deere, I built a hardware–software tractor simulator connecting a Terasic DE10-Lite FPGA to a real-time Unity environment. The DE10-Lite acted as the physical control interface, while Unity provided the virtual environment and returned live simulation telemetry back to the board.
 
-## FPGA
+## DE10-Lite Hardware & FPGA Control Logic
 
-VHDL logic handled:
-- Switch and push-button inputs.
-- Command generation.
-- Serial communication.
-- Telemetry decoding.
-- Seven-segment display output.
+Switches and push buttons, later joined by the board's onboard accelerometer, generated tractor-control command bytes in VHDL. The logic tracked both activation and deactivation of each input so Unity would know not just when a command started but when it ended, then sent the resulting byte over an FTDI serial link.
 
-## Unity
+## Unity Tractor Control & Simulation Logic
 
-C# code received command bytes and mapped them to tractor motion inside a real-time 3D environment.
+On the Unity side, C# code parsed incoming command bytes and mapped them to Rigidbody/WheelCollider-based tractor motion. The tractor moved through a three-level agricultural simulation — collecting corn while avoiding rocks, with progression thresholds at 50, 100, and 150 objects, a 60-second time limit, and a three-life damage system — coordinated by an eight-state finite-state machine (Menu, Level 1–3, Pause, Victory, Defeat, Rock).
 
 ## Bidirectional Telemetry
 
-Unity transmitted the crop counter back to the FPGA. The board decoded the value and displayed it on physical seven-segment displays while the simulation ran.
+Communication ran both ways: Unity tracked the corn count, converted it to a byte, and sent it back over serial; the FPGA decoded the value into hundreds/tens/units and displayed it live across three seven-segment displays — a real-time physical readout of the simulation's state.
 
-## My Contribution — Processor Integration
+## Accelerometer & Processor Integration
 
-The final version added accelerometer-based steering and Assembly routines for processor-level input handling and command generation.
+The final version added accelerometer-based steering and processor-level Assembly routines that evaluated physical and accelerometer inputs through custom ports and address-selection logic to generate control commands, extending the design from pure VHDL control into processor/FPGA co-design.
 
 ## Result
 
-The final prototype closed the loop between physical hardware and simulation: FPGA inputs controlled the Unity tractor in real time, and simulation state returned to the FPGA for physical display.
+The completed prototype closed the loop between programmable hardware and simulation: physical switches, buttons, and accelerometer input controlled the virtual tractor in real time, and Unity's simulation state returned to the FPGA for live physical display on the seven-segment counters.
+
+## Technologies
+
+Terasic DE10-Lite (Intel/Altera MAX 10), VHDL, RTL design, Assembly, Quartus Prime Lite, FTDI serial communication, C#, Unity, Rigidbody/WheelCollider physics.

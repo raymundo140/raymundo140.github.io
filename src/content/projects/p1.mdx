@@ -1,7 +1,7 @@
 ---
 title: "Autonomous Mapping — CALL-M Mobile Manipulator"
-summary: "Modular ROS 2 autonomous-mapping architecture for CALL-M, integrating multimodal perception, static–dynamic obstacle filtering, SLAM, frontier-based exploration, Nav2, goal supervision, and real-robot validation."
-tags: ["ROS 2", "SLAM", "Nav2", "Frontier Exploration", "LiDAR", "RGB-D", "Mobile Manipulation"]
+summary: "Modular ROS 2 autonomous-mapping architecture for CALL-M built around three contributions — supervised mission orchestration, reusable exploration management, and static–dynamic obstacle filtering — validated in simulation and on the physical robot."
+tags: ["ROS 2", "SLAM", "Nav2", "Frontier Exploration", "LiDAR", "RGB-D", "Dynamic Environments"]
 image: "/images/projects/p1.png"
 repoUrl: "https://github.com/raymundo140/call-m"
 pdfUrl: "/papers/projects/p1.pdf"
@@ -9,55 +9,40 @@ pdfUrl: "/papers/projects/p1.pdf"
 
 ## Overview
 
-At the CNRS-AIST Joint Robotics Laboratory, I developed a modular ROS 2 system for autonomous mapping with CALL-M, an omnidirectional mobile manipulator. The system turns mapping into a supervised autonomy problem: it fuses range sensing, builds an occupancy map, identifies where to explore next, sends and monitors navigation goals, recovers from failures, handles moving obstacles, tracks mission progress, and decides when exploration is complete.
+At the CNRS-AIST Joint Robotics Laboratory in Tsukuba, I developed a modular ROS 2 architecture for autonomous mapping with CALL-M, an omnidirectional mobile manipulator. The goal was to move beyond running SLAM under manual driving and build a system that initializes a distributed robotics stack, fuses heterogeneous range sensors, builds an occupancy map, decides where to explore next, supervises navigation goals, recovers from failures, handles moving obstacles, tracks mission progress, and terminates the mission in a controlled way.
+
+The project produced three contributions: a supervised ROS 2 software architecture for complete autonomous-mapping missions, a reusable exploration-management framework for frontier selection and goal supervision, and a static–dynamic obstacle-filtering framework for separating persistent structure from moving observations.
 
 ## System Architecture
 
-The mapping stack combines multimodal scan fusion, static–dynamic obstacle filtering, SLAM Toolbox, frontier-based exploration, and Nav2. Sensor observations from LiDAR and RGB-D/stereo cameras are transformed into a consistent planar representation used by mapping and navigation.
+The mapping pipeline connects five components: multimodal scan fusion, static–dynamic obstacle filtering, SLAM Toolbox, frontier-based exploration, and Nav2. CALL-M combines two RPLIDAR A1M8 scanners, two ZED Mini stereo cameras, an Intel RealSense D435i, an omnidirectional TriOrb base, and a Universal Robots manipulator, running as a distributed ROS 2 graph across an NVIDIA Jetson Orin Nano, an Intel NUC, and an operator computer.
 
-CALL-M distributes computation across onboard computers and an operator workstation through ROS 2, allowing perception, mapping, exploration, and navigation components to run as independent modules.
+## Contribution 1 — Supervised Mapping Architecture
 
-## My Contribution — Exploration Management
+A program manager coordinates the complete mission lifecycle: launching the distributed stack in dependency order, waiting for fused sensor data and a ready occupancy map, gating autonomous exploration behind explicit confirmation, coordinating execution across all three computers, preserving the final map, and shutting the system down in an orderly sequence. The contribution here is not a new SLAM or navigation algorithm — it is the software architecture that makes established components operate together as one reliable autonomous-mapping mission.
 
-I developed a reusable exploration-management framework that extends frontier exploration beyond "find the nearest unknown area and go there." The framework:
+## Contribution 2 — Exploration-Management Framework
 
-- Extracts and clusters frontier regions.
-- Evaluates candidate targets.
-- Sends goals to Nav2.
-- Supervises active navigation actions.
-- Detects timeouts and failures.
-- Stores spatial memory of failed targets.
-- Temporarily excludes problematic regions.
-- Re-selects targets after failed attempts.
-- Tracks exploration progress.
-- Determines mission completion.
-- Prevents conflicting goal requests from asynchronous callbacks.
+I built a reusable exploration-management framework that extends frontier exploration past "go to the nearest unknown area." It extracts and clusters frontier regions, validates and scores candidates, dispatches and supervises Nav2 goals, maintains spatial memory of failed targets, and decides when the mission is complete — requiring only an occupancy map, TF-based pose, and a Nav2-compatible interface, so it transfers to other ROS 2 mobile robots through configuration alone.
 
-This supervisory layer made exploration more reliable during long autonomous runs and reduced repeated navigation attempts toward low-value or unreachable targets.
+## Contribution 3 — Static–Dynamic Obstacle Filtering
 
-I also developed a ROS 2 framework that separates persistent environmental structure from moving observations before they reach SLAM. The filter processes incoming LaserScan data, builds short-term spatial evidence, separates static and dynamic observations, clusters moving measurements, tracks objects across time, and estimates obstacle velocity, producing separate outputs for mapping and navigation. Static observations are used for persistent map construction; dynamic observations remain available to the navigation stack for collision avoidance. The goal is not to hide people from the robot — it is to keep people from becoming walls in the map.
+I also developed a ROS 2 preprocessing framework that separates persistent environmental structure from moving observations before they reach SLAM, producing a static scan for map construction and a dynamic scan that stays available to navigation for collision avoidance. The goal isn't to hide people from the robot — it's to keep people from becoming walls in the map. This framework is being developed as an independent research contribution.
 
 ## Results
 
 **Simulation:**
-- 10/10 autonomous mission completions with the supervised architecture.
-- 7/10 completions for the nearest-frontier baseline.
-- 95.3 ± 2.4% reachable-space coverage.
-- Navigation goals reduced from 161.9 to 56.1 on average.
-- Progress per goal increased from 1.21 m to 3.86 m.
-- Frontier evaluations reduced from 174.3 to 67.6 per mission.
+- 10/10 autonomous mission completions with the supervised architecture, vs. 7/10 for a nearest-frontier baseline.
+- 95.3 ± 2.4% coverage of reachable space.
+- Average navigation goals reduced from 161.9 to 56.1.
+- Average progress per goal increased from 1.21 m to 3.86 m.
 
 **Real robot:**
 - 5/5 autonomous mapping sessions reached completion.
-- 4.90 m measured room dimension reconstructed as 4.85 ± 0.05 m.
-- 6.80 m measured dimension reconstructed as 7.13 ± 0.07 m.
+- A measured 4.90 m room dimension was reconstructed as 4.85 ± 0.05 m.
+- A measured 6.80 m dimension was reconstructed as 7.13 ± 0.07 m.
 
-## Publications
+## Research Output
 
-This project produced two research-paper efforts.
-
-**Paper 1** — *A Supervised ROS 2 Architecture for Autonomous Mapping: Modular Exploration-Management Framework* — First author — Submitted to IEEE/SICE SII 2027.
-
-**Paper 2** — *A ROS 2 Static–Dynamic Obstacle Filtering Framework for Robust Mapping in Dynamic Environments* — In Preparation.
-
-The attached PDF is the combined project manuscript, retained as technical documentation since it describes both contributions as one end-to-end system.
+- [A Supervised ROS 2 Architecture for Autonomous Mapping: Modular Exploration-Management Framework →](/research/supervised-ros2-mapping) — First author, submitted to IEEE/SICE SII 2027. Presents Contributions 1 and 2.
+- [A ROS 2 Static–Dynamic Obstacle Filtering Framework for Robust Mapping in Dynamic Environments →](/research/static-dynamic-obstacle-filtering) — First author, in preparation. Presents Contribution 3.

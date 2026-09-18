@@ -1,33 +1,39 @@
 ---
 title: "Autonomous Face-Tracking Drone"
-summary: "DJI Tello visual-tracking system using Python and OpenCV to recognize a registered person and reactively control yaw, altitude, and distance in real time."
-tags: ["Python", "OpenCV", "Computer Vision", "UAV", "Multithreading", "Reactive Control"]
+summary: "Real-time face-tracking system for a DJI Tello that recognizes a registered person and converts image-space error into yaw, altitude, and forward/backward flight commands, with a multithreaded video pipeline and fail-safe hover behavior."
+tags: ["Python", "OpenCV", "Computer Vision", "UAV", "Face Recognition", "Multithreading", "Reactive Control"]
 image: "/images/projects/p6.png"
 pdfUrl: "/papers/projects/p6.pdf"
 ---
 
 ## Overview
 
-Built an autonomous visual-tracking system for a DJI Tello that recognizes a registered person and controls the drone to keep that target centered and at a roughly consistent distance.
+I built a real-time face-tracking system for a DJI Tello that recognizes a specific registered person and autonomously adjusts the drone's motion to keep that person centered in the camera view and at a roughly constant distance. The project closes the full perception-to-action loop: camera → face recognition → image-space error → flight commands.
+
+## What I Built
+
+The system combines four pieces implemented in Python with OpenCV, face_recognition, djitellopy, and threading: target-specific face recognition, real-time video processing, reactive three-axis flight control, and fail-safe behavior.
 
 ## Perception
 
-A reference face is encoded at startup. During flight, camera frames are processed and compared against the registered target.
+A reference image is encoded before takeoff. During flight, frames are downscaled to 25% resolution and face recognition runs once every 10 frames, comparing each detected encoding against the stored reference at a tolerance of 0.8 — only the registered person is used to control the drone.
 
-To keep the system responsive:
-- Recognition runs periodically rather than on every frame.
-- Frames are downscaled for face processing.
-- A background thread continuously acquires the newest video frame.
+## Real-Time Video Pipeline
 
-## Control
+A dedicated background thread continuously reads the newest camera frame into shared memory protected by a lock, so camera acquisition, face processing, and flight control don't block each other. This produced a smoother video stream and more responsive control on the physical drone.
 
-The target's position in the image is converted directly into motion commands:
-- Horizontal error controls yaw.
-- Vertical error controls altitude.
-- Apparent face size approximates distance for forward/backward motion.
+## Reactive Flight Control
 
-Command limits reduce abrupt motion, and a fail-safe hover is triggered when the registered target is lost.
+Horizontal image error drives yaw, vertical error drives altitude, and the apparent width of the detected face (target: 170 ± 15 px) drives forward/backward motion. Commands are velocity-limited (yaw ±30, vertical ±20, forward/backward ±20).
+
+## Safety
+
+If the registered target is lost, the drone sends zero-velocity commands and hovers rather than continuing its previous motion. A hard ceiling blocks further ascent once altitude reaches 190 cm.
 
 ## Result
 
-The system closed the full perception-to-action loop on a physical UAV and maintained the target near the center of the image while adjusting orientation, height, and distance in real time.
+The completed system linked visual perception to physical UAV motion on a DJI Tello, rotating, adjusting altitude, and moving forward/backward to keep the registered face centered and at a consistent distance, and hovering safely whenever the target left the frame.
+
+## My Role
+
+I developed the complete project: Python application architecture, DJI Tello communication, real-time face recognition, multithreaded video acquisition, three-axis reactive control, altitude and lost-target safety logic, and on-drone testing and tuning.

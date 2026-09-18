@@ -1,148 +1,149 @@
 ---
 
-## CURRENT TASK: Multiple specific content edits across sections
+## CURRENT TASK: Project-by-project edits (10 projects)
 
-Note: this task DOES include edits to Research and Skills sections — these
-are explicit direct instructions from me, not inferred changes, so proceed
-with them despite any earlier note marking those sections as "off-limits."
+Apply the following changes to each project. For any project referencing a
+`.txt` file on the Desktop, read that file in full and use it to replace
+the existing summary/description/body copy for that project — in both
+`src/settings.ts` (the `summary` and `description` fields) AND the matching
+`src/content/projects/pX.mdx` body content — unless the file only maps
+cleanly to one of the two (in which case use your judgment, but check both
+locations since both currently hold copy for each project).
 
-=====================================================================
-1. PROJECTS (home page card + project detail page + settings.ts)
-=====================================================================
-
-Project p3 (currently titled something like "AI Autonomous Mobile Robot —
-Manchester Robotics" or similar):
-- Change the title from "Autonomous Mobile Robot" to **"Self-Driving Car"**
-  (keep "— Manchester Robotics" or whatever company/context suffix is
-  already part of the title format used across other project titles).
-- Remove any mention of "1:10" (e.g. "1:10 scale") from the title,
-  summary, or description. Wherever a scale reference like "1:10" currently
-  appears, replace with just **"scaled autonomous robot"** or **"scaled
-  autonomous car"** (pick whichever reads better in context — likely "scaled
-  autonomous car" given the new title) with no ratio number at all.
-- Update this in `src/settings.ts` (the p3 entry in the `projects` array)
-  and in `src/content/projects/p3.mdx` frontmatter/body — check both for the
-  "1:10" text and the old title wording.
+Since project numbering (p1–p10) may not exactly match the "Project N"
+numbering used below if any reordering happened in earlier tasks, MATCH
+EACH PROJECT BY TITLE first (titles are given below for every project), and
+confirm the correct settings.ts slug/entry before editing — do not assume
+array position N corresponds to "Project N."
 
 =====================================================================
-2. WORK EXPERIENCE
+PROJECT 1 — Autonomous Mapping — CALL-M Mobile Manipulator
 =====================================================================
 
-AIST (w1) — `src/settings.ts` (bullets array) and `src/content/experience/
-w1.mdx`:
-- Add a bullet/sentence stating that during the research internship, I wrote
-  2 research papers as first author and contributed to a third research
-  paper as co-author. Phrase it naturally, e.g.: "Authored 2 research papers
-  as first author and contributed to a third as co-author during the
-  internship." Place it as an additional bullet point in the existing
-  bullets list (both the settings.ts summary bullets and the w1.mdx body,
-  wherever a similar list of accomplishments already exists).
-- Add **"Intelligent Robotics"** to the `tags` array for w1 in settings.ts
-  (and to the tags list in w1.mdx frontmatter if tags are duplicated there).
+- Read `~/Desktop/project1.txt` and replace the current copy for this
+  project (settings.ts `summary`/`description` and `src/content/projects/
+  pX.mdx` body) with the content from that file.
 
-Freelance Technology Specialist (w4) — `src/settings.ts` and
-`src/content/experience/w4.mdx`:
-- Update the existing bullet(s) to explicitly mention clients in both
-  **Mexico and USA** (the current bullets already reference "Mexico and the
-  United States" broadly — make sure "clients" specifically in both
-  countries is clearly stated, e.g. "Delivered technology and automation
-  solutions for clients in Mexico and the USA." Adjust wording to fit
-  naturally with the existing bullet style, don't just duplicate a bullet).
+- In the "RESEARCH OUTPUT" section of this project's page (find this
+  section wherever it's currently rendered on the project detail page — it
+  may need to be added if it doesn't already render as a distinct labeled
+  section), add links to the RESEARCH PAGE (not the raw PDF, the actual
+  `/research/[slug]` detail page on this site) for each paper associated
+  with this project. Cross-reference the paper titles mentioned in
+  project1.txt against the entries already in the `research` array in
+  settings.ts to find the correct slugs to link to. If a referenced paper
+  doesn't have a clear match in the research array, ask me before guessing
+  which one it refers to.
 
 =====================================================================
-3. EDUCATION
+PROJECT 2 — Autonomous Door Opening — CALL-M Mobile Manipulator
 =====================================================================
 
-University of Seoul (e2) — `src/settings.ts` (tags array) and
-`src/content/education/e2.mdx` (Coursework section):
-- Add **"Deep Learning"** and **"Machine Learning"** to the coursework/tags
-  list for e2. Add them both to the `tags` array in settings.ts and to the
-  "Coursework" list in the e2.mdx body content, alongside the existing
-  entries (Artificial Intelligence, Advanced Embedded Systems, Solid-State
-  Electronics, etc.).
+- Read `~/Desktop/project2.txt` and replace the current copy for this
+  project (settings.ts and matching MDX) with the content from that file.
+
+- Same as Project 1: in the "RESEARCH OUTPUT" section, link to the
+  research page(s) for the paper(s) associated with this project (likely
+  the door-opening paper already in the `research` array — confirm the
+  slug matches before linking).
+
+- Add a GitHub repo link at the top of this project's page (same location/
+  styling as the GitHub button already used on other project pages). Use
+  the SAME repository URL as Project 1 — find whatever GitHub URL is
+  currently set for Project 1's `repoUrl` in settings.ts and use that exact
+  same URL for Project 2's `repoUrl` field as well.
 
 =====================================================================
-4. RESEARCH
+PROJECT 3 — Autonomous Mobile Robot — Manchester Robotics
 =====================================================================
 
-Across ALL AIST-affiliated research papers (settings.ts `research` array and
-matching MDX files in `src/content/research/`):
-- Change the date from just "2026" to **"Sep 2026"** for every research
-  entry currently dated "2026" that is AIST-affiliated (CNRS-AIST Joint
-  Robotics Laboratory). Do not change the date for the Neuromorphic
-  Computing / University of Seoul guest-lecture entry — that one keeps its
-  own existing date (Dec 2025).
+Note: this project may currently be titled "Self-Driving Car — Manchester
+Robotics" from a previous task — confirm you're editing the correct project
+entry (the Manchester Robotics one) regardless of exact current title
+wording.
 
-"A Supervised ROS 2 Architecture for Autonomous Mapping: Modular
-Exploration-Management Framework":
-- Update the summary/abstract text to lead with "software" before
-  "architecture." Replace the current summary with exactly:
-  "Presents a modular ROS 2 software architecture for autonomous mapping in
-  unknown and dynamic environments. The exploration-management framework
-  handles frontier evaluation, navigation-goal supervision, failure
-  recovery, progress monitoring, and mission completion while remaining
-  configurable for Nav2-compatible robots."
-  Apply this to the `summary` field in settings.ts. Leave the full
-  `abstract` field (the long original abstract text) unchanged unless
-  instructed otherwise — this edit is for the short summary shown on the
-  card, not the full abstract behind "Read more."
-
-"A ROS 2 Static–Dynamic Obstacle Filtering Framework for Robust Mapping in
-Dynamic Environments":
-- Add "first author" to the role/byline shown on this entry, formatted as:
-  "First Author · CNRS-AIST Joint Robotics Laboratory"
-  Update the `role` field (or wherever "Researcher"/role text currently
-  renders on the card, e.g. next to institution) for this specific entry in
-  settings.ts to read "First Author" instead of whatever it currently says
-  ("Researcher"), and confirm the institution text still shows alongside it
-  in the same "[role] · [institution]" format already used elsewhere on
-  Research cards.
-
-"An Integrated Perception, Navigation, and Manipulation Pipeline for
-Semi-Autonomous Door Opening with a Mobile Manipulator":
-- Below the title, the status currently says "Submitted" (or similar) —
-  change this to exactly: **"Submitted to IEEE/SICE SII 2027"**
-  Update the `status` field (or wherever this status text is sourced from)
-  in settings.ts for this entry.
-- Add a mention that LiDARs were used on this project. Add this to the
-  bullets list and/or the tags array — add "LiDAR" to `tags` if not already
-  present, and add a bullet mentioning LiDAR-based perception/sensing was
-  part of the system (word it naturally alongside the existing bullets about
-  perception, navigation, localization, alignment, etc.).
+- Remove the "Live Demo" button/link entirely from this project's page and
+  card if one currently exists (check `demoUrl` field in settings.ts and
+  wherever the Live Demo button renders in `src/pages/projects/
+  [slug].astro`).
+- In its place, add a GitHub repo button/link using this URL:
+  https://github.com/raymundo140/autonomous-car-computer-vision-yolov8-ros2
+  Set this as the `repoUrl` field for this project in settings.ts, and clear
+  out the `demoUrl` field (set to empty/undefined) so the Live Demo button
+  no longer renders (the existing `{demoUrl && (...)}` conditional pattern
+  should handle hiding it automatically once cleared).
+- In the Overview section of this project's copy, remove any "1:10 scale"
+  reference (this may already be partially done from an earlier task —
+  double check). Replace with just "scaled robot" or "scaled car" wording,
+  with no ratio/number, consistent with the earlier fix applied to this
+  project.
 
 =====================================================================
-5. AWARDS & RECOGNITION
+PROJECT 4 — ROS 2 Object Tracking with PointNet and xArm 6
 =====================================================================
 
-Award 1 (BIT — currently "Student Representative & Honored Graduate — BIT
-International Summer Program" or similar):
-- The date/location line "Aug 2025 / Beijing, China" is currently wrapping
-  awkwardly because the title above it is too long. Shorten the title to:
-  **"Student Representative & Outstanding Performance Recognition"**
-  Update this in the `awards` array in settings.ts (the `title` field for
-  this entry) and confirm the date/location line no longer wraps oddly once
-  the shorter title is in place. If the wrapping issue persists even with
-  the shorter title due to a layout/CSS issue rather than title length,
-  investigate `src/components/ui/AwardCard.astro` (or wherever award cards
-  render) for the actual layout cause and fix it — don't just shorten text
-  and hope it's enough; verify visually.
-
-Award 2 ("Top 1% GPA — School of Engineering & Sciences"):
-- Remove any mention of the specific academic year "2024–2025" from this
-  award's summary/description text. Do not reference which academic year it
-  was — just describe the achievement itself without a year attached. Update
-  the `description` (or `summary`) field for this entry in settings.ts.
+No changes.
 
 =====================================================================
-6. SKILLS
+PROJECT 5 — Autonomous Tractor Navigation — John Deere
 =====================================================================
 
-At the end of every skill category/section (Programming, Tools &
-Frameworks, Hardware, Robotics & Control, AI & Machine Learning, Software &
-Systems — all categories currently in `skillCategories` in settings.ts),
-add a final skill entry that simply reads: **"and others"**
-This should be the last item in each category's `skills` array, appended
-after all existing skills in that category.
+- Change the GitHub repo link (`repoUrl` field in settings.ts for this
+  project) to:
+  https://github.com/raymundo140/WaypointEstimation
+
+=====================================================================
+PROJECT 6 — Autonomous Face-Tracking Drone
+=====================================================================
+
+- Read `~/Desktop/project6.txt` and use it to replace the current copy for
+  this project (settings.ts `summary`/`description` and the matching MDX
+  body).
+
+=====================================================================
+PROJECT 7 — Dual-Elevator Embedded Control System
+=====================================================================
+
+- Read `~/Desktop/project7.txt` and use it to replace the current copy for
+  this project (settings.ts and the matching MDX file — this is the
+  STM32 Dual-Elevator project referenced elsewhere on the site, linked from
+  the Education e2 page's "Key Projects" section from a previous task. If
+  you rename/re-word the title here, make sure that cross-link from
+  e2.mdx still points to the correct project and its link text still makes
+  sense — update the link text there too if needed).
+
+=====================================================================
+PROJECT 8 — IoT Smart Agriculture & Environmental Control
+=====================================================================
+
+No changes. (This is the project previously referred to elsewhere on the
+site as the "IoT Smart Agriculture & Sustainability Platform" — same
+project, confirm title consistency but do not otherwise edit its content.
+Note: this project is also cross-linked from the Education e3 page's "Key
+Projects" section from a previous task — no changes needed there either
+since this project itself isn't changing.)
+
+=====================================================================
+PROJECT 9 — Embedded Tractor Telemetry & Control — John Deere
+=====================================================================
+
+- Add a GitHub repo link (`repoUrl` field in settings.ts) for this project:
+  https://github.com/raymundo140/JohnDeereSTM32RaspPi
+- Read `~/Desktop/project9.txt` and use it to replace the current copy for
+  this project (settings.ts and matching MDX file).
+
+=====================================================================
+PROJECT 10 — FPGA Tractor Simulator with Unity
+=====================================================================
+
+- Update the title to explicitly mention it was a John Deere collaboration.
+  For example, change the title to something like "FPGA Tractor Simulator
+  with Unity — John Deere Collaboration" (adjust exact wording/formatting
+  to match the title style/pattern already used on other John Deere
+  projects, e.g. how Project 5 and Project 9 titles indicate the John Deere
+  association).
+- Read `~/Desktop/project10.txt` and use it to replace the current copy for
+  this project (settings.ts and matching MDX file).
 
 =====================================================================
 GENERAL REMINDERS
@@ -150,11 +151,16 @@ GENERAL REMINDERS
 
 - Follow the existing critical Astro gotcha: any `.map()` returning
   multi-line JSX must use `=> { return (...) }`, never `=> (...)`.
-- Follow existing styling conventions already established across the site.
+- Follow existing styling conventions already established across the site
+  (button styles, card styles, section headings, etc. — match whatever
+  pattern is already used for GitHub links, Live Demo links, and any
+  existing "Research Output"-style sections elsewhere on the site).
 - After making all these edits, show me a summary of every file changed,
-  organized by the 6 numbered sections above, and remind me to review
-  locally with `npm run dev` before pushing — specifically re-check the
-  Award 1 card to confirm the date/location no longer wraps badly, and
-  re-check all AIST research entries for the corrected "Sep 2026" date.
-- If anything above is ambiguous (e.g. exactly where a field lives, or how
-  to phrase a bullet naturally), ask me before guessing.
+  organized project by project (1 through 10), and remind me to review
+  locally with `npm run dev` before pushing — specifically re-check every
+  GitHub link, the Research Output cross-links on Projects 1 and 2, the
+  Live Demo removal on Project 3, and the e2/e3 education cross-links to
+  Projects 7 and 8 still working correctly.
+- If any `.txt` file referenced above isn't found on the Desktop, or if a
+  project title doesn't clearly match what's described here, stop and ask
+  me before guessing.

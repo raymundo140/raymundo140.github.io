@@ -1,7 +1,7 @@
 ---
 title: "Dual-Elevator Embedded Control System"
-summary: "Five-floor, dual-cabin elevator prototype built around an STM32 with concurrent state machines, PWM servo control, Hall-effect safety sensing, and greedy request scheduling."
-tags: ["STM32", "Embedded C", "Finite-State Machines", "PWM", "Scheduling", "SolidWorks"]
+summary: "Five-floor, dual-cabin elevator prototype built around an STM32 with independent non-blocking state machines, per-servo PWM calibration, a FIFO request queue, greedy elevator-assignment scheduling, Hall-effect safety sensing, and UART monitoring."
+tags: ["STM32", "Embedded C", "Finite-State Machines", "PWM", "Scheduling", "UART", "SolidWorks", "3D Printing"]
 image: "/images/projects/p7.png"
 repoUrl: "https://github.com/raymundo140/stm32-dual-elevator-embedded-system"
 demoUrl: "https://youtu.be/ulnk5hJibjI?si=Kf-K0Fx7CQR4lFax"
@@ -10,32 +10,40 @@ pdfUrl: "/papers/projects/p7.pdf"
 
 ## Overview
 
-Designed and built a five-floor, dual-cabin elevator prototype at the University of Seoul. The system combines mechanical design, embedded control, user input, actuation, safety sensing, and request scheduling on an STM32 NUCLEO-G474RE.
+At the University of Seoul, I designed and built a five-floor, dual-cabin elevator prototype around an STM32 NUCLEO-G474RE. The project combined mechanical design, embedded firmware, motor control, user input, request scheduling, safety sensing, and real-time monitoring in one physical system. Each elevator operates independently, but both share the same request queue and scheduling logic.
 
-## Architecture
+## What I Built
 
-Each elevator runs through independent non-blocking state logic. Requests are entered through a 4x4 keypad and stored in a shared queue, while a scheduler assigns requests to the most suitable cabin.
+I developed the complete system across four layers: mechanical design and fabrication, hardware integration, embedded control software, and request scheduling with real-time monitoring — including two independent cabins, a FIFO request queue, greedy elevator-assignment logic, independent finite-state machines, and UART system monitoring.
 
-## My Contribution — Scheduling
+## Mechanical Design
 
-A deterministic greedy scheduler evaluates:
-- Distance to the pickup floor.
-- Cabin availability.
-- Directional preference.
+I designed the elevator structure and cabins in SolidWorks and fabricated the physical prototype by 3D printing, iterating for fit, stability, and printability so the platform could support real embedded-system testing rather than only simulation.
 
-The selected elevator then executes the pickup and destination sequence through its own finite-state machine.
+## Hardware Architecture
 
-## Hardware
+The STM32 NUCLEO-G474RE is the central controller. Each elevator is driven by its own FS90R continuous-rotation servo through an independent hardware-timer PWM channel (TIM3 CH4 and TIM20 CH3). A 4x4 matrix keypad is scanned across eight GPIO lines, magnetic Hall-effect sensors provide safety limits at the travel boundaries, and UART exposes internal state for debugging.
 
-- STM32 NUCLEO-G474RE.
-- Two continuous-rotation servos.
-- 4x4 matrix keypad.
-- Hall-effect / magnetic safety sensing.
-- Hardware PWM.
-- UART debugging/monitoring.
-- SolidWorks mechanical design.
-- 3D-printed structure and cabins.
+## Embedded Control
+
+Because the two servos don't behave identically, each has its own calibration profile — neutral, upward, and downward pulse widths, and a deadband — so PWM commands map cleanly to UP/DOWN/STOP behavior on both motors.
+
+## Scheduling Algorithm
+
+Validated keypad requests are stored in a FIFO queue rather than driving motors directly. A greedy scoring function then assigns each pending request to the most suitable elevator based on distance to the pickup floor, idle/busy status, and directional compatibility — a deterministic, computationally lightweight strategy for a resource-constrained microcontroller coordinating two elevators.
+
+## Non-Blocking State Machines
+
+Each elevator runs its own finite-state machine (idle, moving, doors) across pickup and destination phases. Timing is tracked using the STM32 system tick rather than blocking delays, so both elevators progress independently while keypad input, the request queue, and UART monitoring keep running — independent non-blocking state machines in one main loop, not an RTOS task scheduler.
+
+## Safety & Monitoring
+
+Floor position is tracked using calibrated travel time; magnetic Hall-effect sensors provide safety boundaries at the physical travel limits rather than closed-loop floor sensing. UART continuously streams requests, assignments, floor position, door transitions, and safety events for real-time debugging.
 
 ## Result
 
-The final system operated both cabins independently while sharing request and scheduling logic, demonstrating real-time embedded control and complete hardware–software integration in a physical prototype.
+The completed prototype accepted pickup and destination requests from the keypad, queued and assigned them across two independently moving elevators, executed pickup and drop-off phases through per-cabin state machines, applied per-servo PWM calibration, and streamed system activity over UART — demonstrating real-time coordination of two concurrent physical mechanisms on one embedded platform.
+
+## My Role
+
+I designed and built the complete project: system architecture, SolidWorks mechanical design and 3D-printed fabrication, STM32CubeIDE configuration, keypad and PWM interfacing, servo calibration, the FIFO request queue and greedy scheduling logic, the finite-state machines, safety-limit integration, UART monitoring, and physical testing and tuning.
